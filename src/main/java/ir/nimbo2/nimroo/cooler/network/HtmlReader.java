@@ -29,6 +29,7 @@ public class HtmlReader {
             String inputLine;
             while ((inputLine = bufferedReader.readLine()) != null) {
                 stringBuilder.append(inputLine);
+                stringBuilder.append("\n");
             }
         } catch (IOException e) {
         }
