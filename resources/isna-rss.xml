@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+    <channel>
+        <title>ایسنا</title>
+        <link>https://www.isna.ir</link>
+        <description>جدیدترین اخبار ورزشی، حوادث، سیاسی و اقتصادی ایران و سایر مناطق جهان را در خبرگزاری ایسنا بخوانید</description>
+        <copyright>© 2016 isna.ir. All rights reserved</copyright>
+        <lastBuildDate>Sat, 07 Jul 2018 14:57:45 GMT</lastBuildDate>
+        <generator>Saba Enterprise Newsroom (www.nastooh.ir)</generator>
+        <item>
+            <title>وقوع زمین لرزه ۳.۵ ریشتری در «تیتکانلو»ی خراسان‌شمالی</title>
+            <link>https://www.isna.ir/news/97041609155/وقوع-زمین-لرزه-۳-۵-ریشتری-در-تیتکانلو-ی-خراسان-شمالی</link>
+            <description>زمین لرزه ۳.۵ ریشتری تیتکانلو در استان خراسان شمالی را لرزاند.</description>
+            <content:encoded />
+            <enclosure url="https://cdn.isna.ir/d/2018/05/30/3/57687640.jpg" length="154190" type="image/jpeg" />
+            <pubDate>Sat, 07 Jul 2018 14:57:13 GMT</pubDate>
+            <guid>https://www.isna.ir/news/97041609155/وقوع-زمین-لرزه-۳-۵-ریشتری-در-تیتکانلو-ی-خراسان-شمالی</guid>
+        </item>
+        <item>
+            <title>مرحله یک‌چهارم جام‌جهانی روسیه؛ دیدار تیم‌های سوئد و انگلستان</title>
+            <link>https://www.isna.ir/photo/97041609153/مرحله-یک-چهارم-جام-جهانی-روسیه-دیدار-تیم-های-سوئد-و-انگلستان</link>
+            <description>دیدار دو تیم فوتبال سوئد و انگلستان شنبه ۱۶ تیرماه در شهر کازان روسیه آغاز شد.</description>
+            <content:encoded />
+            <enclosure url="https://cdn.isna.ir/d/2018/07/07/3/57706461.jpg" length="710799" type="image/jpeg" />
+            <pubDate>Sat, 07 Jul 2018 14:52:13 GMT</pubDate>
+            <guid>https://www.isna.ir/photo/97041609153/مرحله-یک-چهارم-جام-جهانی-روسیه-دیدار-تیم-های-سوئد-و-انگلستان</guid>
+        </item>
+        <item>
+            <title>واکنش هرناندز به تقابل با هازارد: ما بودیم که مسی را حذف کردیم</title>
+            <link>https://www.isna.ir/news/97041609151/واکنش-هرناندز-به-تقابل-با-هازارد-ما-بودیم-که-مسی-را-حذف-کردیم</link>
+            <description>مدافع تیم ملی فرانسه به رقابت با ادن هازارد واکنش نشان داد.</description>
+            <content:encoded />
+            <enclosure url="https://cdn.isna.ir/d/2018/07/07/3/57706466.jpg" length="31979" type="image/jpeg" />
+            <pubDate>Sat, 07 Jul 2018 14:51:25 GMT</pubDate>
+            <guid>https://www.isna.ir/news/97041609151/واکنش-هرناندز-به-تقابل-با-هازارد-ما-بودیم-که-مسی-را-حذف-کردیم</guid>
+        </item>
+
+    </channel>
+</rss>
