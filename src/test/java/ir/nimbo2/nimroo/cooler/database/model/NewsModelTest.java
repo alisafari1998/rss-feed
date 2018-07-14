@@ -26,17 +26,13 @@ public class NewsModelTest {
     @Before
     public void beforeEach() throws Exception {
         news = new NewsModel();
-        news.init(dc.getConnection());
-        news.createTable();
     }
 
     @Test
     public void createTableTest() {
 
-        Statement st = null;
-
         try {
-            st = dc.getConnection().createStatement();
+            Statement st = dc.getConnection().createStatement();
             st.executeQuery("select * from " + Config.DATABASE_NAME+ ".news");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,22 +47,23 @@ public class NewsModelTest {
     @Test
     public void insertTest() throws Exception {
 
-        fillDummyData(news);
-        news.insert();
+        news = getDummyModel();
+        news.setId(dc.insertNews(news));
 
         Statement loadById = dc.getConnection().createStatement();
-        ResultSet result = loadById.executeQuery("SELECT * FROM "+ Config.DATABASE_NAME + ".news" + " WHERE id="+news.id);
+        ResultSet result = loadById.executeQuery("SELECT * FROM "+ Config.DATABASE_NAME + ".news" +
+                " WHERE id="+news.getId());
 
         if (result.next()) {
-            assertEquals(result.getLong("id"), news.id);
-            assertEquals(result.getString("title"), news.title);
-            assertEquals(result.getString("link"), news.link);
-            assertEquals(result.getString("description"), news.description);
-            assertEquals(result.getDate("publish_date"), news.publishDate);
-            assertEquals(result.getString("news_body"), news.newsBody);
+            assertEquals(result.getLong("id"), news.getId());
+            assertEquals(result.getString("title"), news.getTitle());
+            assertEquals(result.getString("link"), news.getLink());
+            assertEquals(result.getString("description"), news.getDescription());
+            assertEquals(result.getDate("publish_date"), news.getPublishDate());
+            assertEquals(result.getString("news_body"), news.getNewsBody());
         }
         else {
-            Assert.assertFalse("Item with id: "+news.id+ " not found.", true);
+            Assert.assertFalse("Item with id: " + news.getId() + " not found.", true);
         }
     }
 
@@ -74,18 +71,13 @@ public class NewsModelTest {
      * TODO This is dependent test.
      */
     @Test
-    public void loadTest() {
+    public void loadTest() throws Exception {
 
-        NewsModel inserted = new NewsModel();
-        inserted.init(dc.getConnection());
-        fillDummyData(inserted);
-        inserted.insert();
+        NewsModel inserted = getDummyModel();;
+        inserted.setId(dc.insertNews(inserted));
 
-        news.id = inserted.id;
-        news.load();
-
+        news = dc.loadNews(inserted.getId());
         assertEquals(news, inserted);
-
     }
 
     @AfterClass
@@ -95,14 +87,16 @@ public class NewsModelTest {
         st.execute("DROP DATABASE IF EXISTS " + Config.DATABASE_NAME);
     }
 
-    public void fillDummyData(NewsModel model) {
+    public NewsModel getDummyModel() {
 
+        NewsModel model = new NewsModel();
         String tmp = "_(سلام ؟!)ـ" + System.currentTimeMillis();
-        model.title = "title" + tmp;
-        model.link = "link" + tmp;
-        model.description = "description" + tmp;
-        model.publishDate = Date.valueOf(LocalDate.now());
-        model.newsBody = "body" + tmp;
+        model.setTitle("title" + tmp);
+        model.setLink("link" + tmp);
+        model.setDescription("description" + tmp);
+        model.setPublishDate(Date.valueOf(LocalDate.now()));
+        model.setNewsBody("body" + tmp);
+        return model;
 
     }
 
