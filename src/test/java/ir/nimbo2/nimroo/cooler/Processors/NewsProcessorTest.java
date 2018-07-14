@@ -15,10 +15,10 @@ public class NewsProcessorTest {
                 + "در بخش کومیته هر برد سه امتیاز و هر مساوی یک امتیاز دارد." + " "
                 + "در کاتای انفرادی هر مسابقه سه امتیاز دارد. در صورتی که برد پرچم 3 – 2 باشد تقسیم امتیازات به صورت دو امتیاز برای برنده و یک امتیاز برای بازنده خواهد بود و در بخش تیمی هر مسابقه دارای 5 امتیاز است و در صورتی که برد با پرچم 3-2 باشد تقسیم امتیازات 3 امتیاز برای برنده و 2 امتیاز برای بازنده است." + " "
                 + "انتهای پیام/س";
-        assertEquals(news, NewsProcessor.getNews("", "https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "4#0#1#0#5#0"));
-        assertEquals(news, NewsProcessor.getNews("", "https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "span[id=nwstxtBodyPane]"));
-        assertEquals(news, NewsProcessor.getNews("", "https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "div[class=nwstxtmainpane]#0"));
-        assertEquals(news, NewsProcessor.getNews("", "https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "div[class=container mainframe]#1#0#5#0"));
+        assertEquals(news, NewsProcessor.getNews("https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "4#0#1#0#5#0"));
+        assertEquals(news, NewsProcessor.getNews("https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "span[id=nwstxtBodyPane]"));
+        assertEquals(news, NewsProcessor.getNews("https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "div[class=nwstxtmainpane]#0"));
+        assertEquals(news, NewsProcessor.getNews("https://www.farsnews.com/news/13970420000614/%D8%A2%D8%AE%D8%B1%D9%8A%D9%86-%D9%81%D8%B1%D8%B5%D8%AA-%D8%AD%D8%B6%D9%88%D8%B1-%D8%AF%D8%B1-%D8%B3%D9%88%D9%BE%D8%B1-%D9%84%D9%8A%DA%AF-%D9%83%D8%A7%D8%B1%D8%A7%D8%AA%D9%87-%D8%A7%D8%B9%D9%84%D8%A7%D9%85-%D8%B4%D8%AF", "div[class=container mainframe]#1#0#5#0"));
     }
 
     @Test
@@ -39,8 +39,11 @@ public class NewsProcessorTest {
         news2 = news2.replaceAll("\n", "");
         news2 = news2.replaceAll(" ", "");
         news2 = news2.replace("\u00a0", "");
-        assertEquals(news2, NewsProcessor.getNews("", "http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF", "div[class=body body_news_search]").replace(" ", "").replace("\u00a0", ""));
-        assertEquals(news2, NewsProcessor.getNews("", "http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF", "div[style=text-align: justify;padding: 10px;]").replace(" ", "").replace("\u00a0", ""));
-        assertEquals(news2, NewsProcessor.getNews("", "http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF", "1#0#0#2#3").replace(" ", "").replace("\u00a0", ""));
+        assertEquals(news2, NewsProcessor.getNews("http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF",
+                "div[class=body body_news_search]").replace(" ", "").replace("\u00a0", ""));
+        assertEquals(news2, NewsProcessor.getNews("http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF",
+                "div[style=text-align: justify;padding: 10px;]").replace(" ", "").replace("\u00a0", ""));
+        assertEquals(news2, NewsProcessor.getNews("http://snn.ir/fa/news/696974/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%D8%A7%D9%86-%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87-%DB%8C%D8%A7%D8%B3%D9%88%D8%AC-%D8%A8%D9%87-%DA%A9%D9%85%DA%A9-%D9%85%D8%AD%D8%B1%D9%88%D9%85%DB%8C%D9%86-%D8%B4%D8%AA%D8%A7%D9%81%D8%AA%D9%86%D8%AF",
+                "1#0#0#2#3").replace(" ", "").replace("\u00a0", ""));
     }
 }

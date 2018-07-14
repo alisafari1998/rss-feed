@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class NewsProcessor {
 
-    public static String getNews(String site, String link, String config) {
+    public static String getNews(String link, String config) {
         Document document = null;
         try {
             document = Jsoup.connect(link).validateTLSCertificates(false).get();
