@@ -8,11 +8,9 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import java.nio.charset.StandardCharsets;
 
-public class HtmlReader {
+public class HttpRequest {
 
     public static String getHtmlString(String url) {
-
-
 
         StringBuilder stringBuilder = new StringBuilder();
         try {
@@ -30,7 +28,6 @@ public class HtmlReader {
         } catch (IOException e) {
         }
 
-        //System.out.println(stringBuilder);
         return stringBuilder.toString();
     }
 }
