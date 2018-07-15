@@ -128,7 +128,7 @@ public class DatabaseConnection {
      * If for any reason result would be empty an Exception would be thrown
      * @throws SQLException
      */
-    public long insertNews(NewsModel newsModel) throws Exception {
+    public long insertNews(NewsModel newsModel) throws UnexpectedSQLBehaviorException, SQLException {
         PreparedStatement insertPS = connection.prepareStatement("INSERT INTO "+ Config.DATABASE_NAME +".news " +
                 "(title, link, description, publish_date, news_body) VALUES (?, ?, ?, ?, ?)");
 
