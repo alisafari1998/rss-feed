@@ -1,5 +1,7 @@
 package ir.nimbo2.nimroo.cooler.Processors;
 
+import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
+import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,10 +13,15 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 public class RSSFeedProcessorTest {
 
+    private final DateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
     private RSSFeedProcessor processor;
 
     private final String titles [] = {"وقوع زمین لرزه ۳.۵ ریشتری در «تیتکانلو»ی خراسان\u200Cشمالی",
@@ -34,11 +41,14 @@ public class RSSFeedProcessorTest {
             "مدافع تیم ملی فرانسه به رقابت با ادن هازارد واکنش نشان داد."
     };
 
-    private final String pubDate [] = {
-            "Sat, 07 Jul 2018 14:57:13 GMT",
-            "Sat, 07 Jul 2018 14:52:13 GMT",
-            "Sat, 07 Jul 2018 14:51:25 GMT"
+    private final Date pubDate [] = {
+            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:57:13 GMT").getTime()),
+            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:52:13 GMT").getTime()),
+            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:51:25 GMT").getTime()),
     };
+
+    public RSSFeedProcessorTest() throws ParseException {
+    }
 
 
     @Before
@@ -55,8 +65,8 @@ public class RSSFeedProcessorTest {
 
         assertNotEquals(processor.getResults().size(), 0);
         for (int i = 0; i < processor.getResults().size(); i++) {
-            HashMap<String, String> item = processor.getResults().get(i);
-            assertEquals(item.get("title"), titles[i]);
+            NewsModel item = processor.getResults().get(i);
+            assertEquals(item.getTitle(), titles[i]);
         }
     }
 
@@ -65,8 +75,8 @@ public class RSSFeedProcessorTest {
 
         assertNotEquals(processor.getResults().size(), 0);
         for (int i = 0; i < processor.getResults().size(); i++) {
-            HashMap<String, String> item = processor.getResults().get(i);
-            assertEquals(item.get("link"), links[i]);
+            NewsModel item = processor.getResults().get(i);
+            assertEquals(item.getLink(), links[i]);
         }
     }
 
@@ -75,8 +85,8 @@ public class RSSFeedProcessorTest {
 
         assertNotEquals(processor.getResults().size(), 0);
         for (int i = 0; i < processor.getResults().size(); i++) {
-            HashMap<String, String> item = processor.getResults().get(i);
-            assertEquals(item.get("description"), descriptions[i]);
+            NewsModel item = processor.getResults().get(i);
+            assertEquals(item.getDescription(), descriptions[i]);
         }
     }
 
@@ -85,8 +95,8 @@ public class RSSFeedProcessorTest {
 
         assertNotEquals(processor.getResults().size(), 0);
         for (int i = 0; i < processor.getResults().size(); i++) {
-            HashMap<String, String> item = processor.getResults().get(i);
-            assertEquals(item.get("pubDate"), pubDate[i]);
+            NewsModel item = processor.getResults().get(i);
+            assertEquals(item.getPublishDate(), pubDate[i]);
         }
     }
 }
