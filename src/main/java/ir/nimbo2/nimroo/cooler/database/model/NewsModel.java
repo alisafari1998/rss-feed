@@ -74,4 +74,10 @@ public class NewsModel {
     public void setId(long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "NewsModel:\n" + "Title:\t" + title + "\nLink\t" + link + "\nDescription:\t" + description +
+                "\nPublishDate:\t" + (publishDate!=null ? publishDate.toString() : null)+ "\nNewsBody:\t" + newsBody;
+    }
 }
