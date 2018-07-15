@@ -3,6 +3,7 @@ package ir.nimbo2.nimroo.cooler.database.model;
 import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
+import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,27 +19,29 @@ import static org.junit.Assert.assertEquals;
 
 public class ConfigModelTest {
 
-    static DatabaseConnection dc = new DatabaseConnection();
-    static ConfigModel configModel;
+    ConfigModel configModel;
+    ConfigRepository repository;
+    static DatabaseConnection dc;
     ArrayList<ConfigModel> dbContent = new ArrayList<>();
 
     @BeforeClass
     public static void connectToDB() throws Exception {
-        configModel = new ConfigModel();
         Config.DATABASE_NAME += System.currentTimeMillis();
+        dc = new DatabaseConnection();
         dc.init();
+        ConfigRepository.getRepository().createConfigTable();
     }
 
     @Before
     public void setUp() throws Exception {
         configModel = new ConfigModel();
+        repository = ConfigRepository.getRepository();
     }
 
     @Test
-    public void createTableTest() {
+    public void createTableTest() throws SQLException {
 
-        try {
-            Statement st = dc.getConnection().createStatement();
+        try (Statement st = dc.getConnection().createStatement()){
             st.executeQuery("select * from "+Config.DATABASE_NAME + ".config");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,7 +57,7 @@ public class ConfigModelTest {
     public void insertTest() throws SQLException, UnexpectedSQLBehaviorException {
 
         configModel = getDummyModel();
-        configModel.setId(dc.insertConfig(configModel));
+        configModel.setId(repository.insertConfig(configModel));
         dbContent.add(configModel);
         ConfigModel inserted = new ConfigModel();
         Statement st = dc.getConnection().createStatement();
@@ -82,10 +85,10 @@ public class ConfigModelTest {
     public void load() throws Exception {
 
       ConfigModel inserted = getDummyModel();
-      inserted.setId(dc.insertConfig(inserted));
+      inserted.setId(repository.insertConfig(inserted));
       dbContent.add(inserted);
 
-      configModel = dc.loadConfig(inserted.getId());
+      configModel = repository.loadConfig(inserted.getId());
 
       assertEquals(configModel, inserted);
 
@@ -100,11 +103,11 @@ public class ConfigModelTest {
         ConfigModel toInsert;
         for (int i = 0; i < 10; i++) {
             toInsert = getDummyModel();
-            toInsert.setId(dc.insertConfig(toInsert));
+            toInsert.setId(repository.insertConfig(toInsert));
             dbContent.add(toInsert);
         }
 
-        List<ConfigModel> configs = dc.loadAllConfigs();
+        List<ConfigModel> configs = repository.loadAllConfigs();
         assertEquals(configs.size(), dbContent.size());
         assertEquals(configs, dbContent);
     }

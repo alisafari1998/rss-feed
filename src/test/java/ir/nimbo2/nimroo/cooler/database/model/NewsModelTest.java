@@ -2,6 +2,7 @@ package ir.nimbo2.nimroo.cooler.database.model;
 
 import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
+import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.junit.*;
 
 import java.sql.Date;
@@ -14,24 +15,29 @@ import static org.junit.Assert.assertEquals;
 
 public class NewsModelTest {
 
-    static DatabaseConnection dc = new DatabaseConnection();
+    static DatabaseConnection dc;
     NewsModel news;
+    NewsRepository repository;
 
     @BeforeClass
     public static void init() throws Exception {
         Config.DATABASE_NAME += System.currentTimeMillis();
+        dc = new DatabaseConnection();
         dc.init();
+        NewsRepository.getRepository().createNewsTable();
     }
 
     @Before
     public void beforeEach() throws Exception {
         news = new NewsModel();
+        repository = NewsRepository.getRepository();
     }
 
     @Test
     public void createTableTest() {
-
         try {
+            repository.createNewsTable();
+
             Statement st = dc.getConnection().createStatement();
             st.executeQuery("select * from " + Config.DATABASE_NAME+ ".news");
         } catch (SQLException e) {
@@ -48,7 +54,7 @@ public class NewsModelTest {
     public void insertTest() throws Exception {
 
         news = getDummyModel();
-        news.setId(dc.insertNews(news));
+        news.setId(repository.insertNews(news));
 
         Statement loadById = dc.getConnection().createStatement();
         ResultSet result = loadById.executeQuery("SELECT * FROM "+ Config.DATABASE_NAME + ".news" +
@@ -74,15 +80,14 @@ public class NewsModelTest {
     public void loadTest() throws Exception {
 
         NewsModel inserted = getDummyModel();;
-        inserted.setId(dc.insertNews(inserted));
+        inserted.setId(repository.insertNews(inserted));
 
-        news = dc.loadNews(inserted.getId());
+        news = repository.loadNews(inserted.getId());
         assertEquals(news, inserted);
     }
 
     @AfterClass
     public static void cleanUp() throws SQLException {
-
         Statement st = dc.getConnection().createStatement();
         st.execute("DROP DATABASE IF EXISTS " + Config.DATABASE_NAME);
     }

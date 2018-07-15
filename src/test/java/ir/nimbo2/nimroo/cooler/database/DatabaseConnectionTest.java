@@ -15,16 +15,11 @@ import static org.junit.Assert.assertFalse;
 
 public class DatabaseConnectionTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        new DatabaseConnection().init();
-    }
-
     @Test
-    public void dbAccessTest() {
-
+    public void dbAccessTest() throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
         try {
-          new DatabaseConnection().getConnection().createStatement();
+          db.getConnection().createStatement();
         } catch (SQLException e) {
           e.printStackTrace();
           assert false;
@@ -32,26 +27,31 @@ public class DatabaseConnectionTest {
           e.printStackTrace();
           assert false;
         }
+        finally{
+            db.getConnection().close();
+        }
 
         assert true;
     }
 
     @Test
-    public void createDatabaseTest() {
-
+    public void createDatabaseTest() throws SQLException {
+        DatabaseConnection db = new DatabaseConnection();
         try {
+            db.init();
 
-          Statement st =  new DatabaseConnection().getConnection().createStatement();
-          ResultSet res = st.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"+ Config.DATABASE_NAME +"'");
-          res.next();
-          assertEquals(res.getString("SCHEMA_NAME"), Config.DATABASE_NAME);
+            Statement st =  new DatabaseConnection().getConnection().createStatement();
+            ResultSet res = st.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"+ Config.DATABASE_NAME +"'");
+            res.next();
+            assertEquals(res.getString("SCHEMA_NAME"), Config.DATABASE_NAME);
 
         } catch (Exception e) {
           e.printStackTrace();
           assertFalse(true);
         }
-
-
+        finally{
+            db.getConnection().close();
+        }
     }
 
 }
