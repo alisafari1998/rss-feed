@@ -80,14 +80,7 @@ public class NewsRepository {
             preparedStatement.setLong(1, id);
             ResultSet result = preparedStatement.executeQuery();
             if (result.next()) {
-                NewsModel newsModel = new NewsModel();
-                newsModel.setId(result.getLong("id"));
-                newsModel.setTitle(result.getString("title"));
-                newsModel.setLink(result.getString("link"));
-                newsModel.setDescription(result.getString("description"));
-                newsModel.setPublishDate(result.getTimestamp("publish_date"));
-                newsModel.setNewsBody(result.getString("news_body"));
-                return newsModel;
+                return convertToNewsModel(result);
             }
 
             return null;
@@ -95,6 +88,17 @@ public class NewsRepository {
         finally{
             c.close();
         }
+    }
+
+    private NewsModel convertToNewsModel(ResultSet result) throws SQLException {
+        NewsModel newsModel = new NewsModel();
+        newsModel.setId(result.getLong("id"));
+        newsModel.setTitle(result.getString("title"));
+        newsModel.setLink(result.getString("link"));
+        newsModel.setDescription(result.getString("description"));
+        newsModel.setPublishDate(result.getTimestamp("publish_date"));
+        newsModel.setNewsBody(result.getString("news_body"));
+        return newsModel;
     }
 
     private Connection getConnection() {
