@@ -5,11 +5,11 @@ import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.junit.*;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 
@@ -99,7 +99,7 @@ public class NewsModelTest {
         model.setTitle("title" + tmp);
         model.setLink("link" + tmp);
         model.setDescription("description" + tmp);
-        model.setPublishDate(Date.valueOf(LocalDate.now()));
+        model.setPublishDate(Timestamp.valueOf(LocalDateTime.now()));
         model.setNewsBody("body" + tmp);
         return model;
 

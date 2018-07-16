@@ -1,14 +1,14 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class NewsModel {
 
     private long id;
     private String title;
     private String description;
-    private Date publishDate;
+    private Timestamp publishDate;
     private String link;
     private String newsBody;
 
@@ -31,7 +31,7 @@ public class NewsModel {
         return newsBody;
     }
 
-    public Date getPublishDate() {
+    public Timestamp getPublishDate() {
         return publishDate;
     }
 
@@ -51,7 +51,7 @@ public class NewsModel {
         this.newsBody = newsBody;
     }
 
-    public void setPublishDate(Date publishDate) {
+    public void setPublishDate(Timestamp publishDate) {
         this.publishDate = publishDate;
     }
 

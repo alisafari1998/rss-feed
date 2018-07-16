@@ -23,7 +23,7 @@ public class NewsRepository {
         createNewsTableQuery = "CREATE TABLE IF NOT  EXISTS "+
                 Config.DATABASE_NAME +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
                 "title VARCHAR (255), link VARCHAR (255) NOT NULL, description VARCHAR (1024)," +
-                "publish_date DATE, news_body MEDIUMTEXT)";
+                "publish_date DATETIME, news_body MEDIUMTEXT)";
 
         insertNewsQuery = "INSERT INTO "+ Config.DATABASE_NAME +".news " +
                 "(title, link, description, publish_date, news_body) VALUES (?, ?, ?, ?, ?)";
@@ -58,7 +58,7 @@ public class NewsRepository {
             insertPS.setString(1, newsModel.getTitle());
             insertPS.setString(2, newsModel.getLink());
             insertPS.setString(3, newsModel.getDescription());
-            insertPS.setDate(4, newsModel.getPublishDate());
+            insertPS.setTimestamp(4, newsModel.getPublishDate());
             insertPS.setString(5, newsModel.getNewsBody());
 
             insertPS.executeUpdate();
@@ -85,7 +85,7 @@ public class NewsRepository {
                 newsModel.setTitle(result.getString("title"));
                 newsModel.setLink(result.getString("link"));
                 newsModel.setDescription(result.getString("description"));
-                newsModel.setPublishDate(result.getDate("publish_date"));
+                newsModel.setPublishDate(result.getTimestamp("publish_date"));
                 newsModel.setNewsBody(result.getString("news_body"));
                 return newsModel;
             }
