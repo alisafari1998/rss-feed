@@ -8,20 +8,21 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 public class NewsProcessor {
-
-    public static String getNews(String link, String config) {
+    static String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36";
+    public static String getNews(String link, String config) throws NoNewsBodyFoundException, IOException {
         Document document = null;
-        try {
-            document = Jsoup.connect(link).validateTLSCertificates(false).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Jsoup.connect(link).validateTLSCertificates(false).userAgent(userAgent).get();
+        document = Jsoup.connect(link).validateTLSCertificates(false).get();
 
         String[] configParts = config.split("#");
         int configBeginPart = 0;
         Element lastElement = document.select("body").first();
 
         if (configParts[0].contains("=")) {
+            if (document.select(configParts[0]).size() == 0) {
+                throw new NoNewsBodyFoundException("");
+            }
+
             lastElement = document.select(configParts[0]).get(0);   // tag[search inside]  --> tag[attr=value]
             configBeginPart++;
         }
