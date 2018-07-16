@@ -2,6 +2,7 @@ package ir.nimbo2.nimroo.cooler.Processors;
 
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 import org.jsoup.Jsoup;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 
@@ -38,16 +39,21 @@ public class RSSFeedProcessor {
      * It processes the data inside rss feed and creates a List of HashMaps witch is accessible from getResults method.
      */
     public void process() throws IOException {
+        Document document = null;
 
-        Document document = Jsoup.connect(String.valueOf(url)).get();
+        if (url != null) {
+            document = Jsoup.connect(String.valueOf(url)).parser(Parser.xmlParser()).get();
+        } else {
+            document = Jsoup.parse(content, "", Parser.xmlParser());
+        }
+
         Elements items = document.getElementsByTag("item");
         for(int i = 0; i < items.size(); i++) {
             NewsModel tmp = new NewsModel();
             for(int j = 1; j < items.get(i).getAllElements().size(); j++) {
                 String key = items.get(i).getAllElements().get(j).tagName();
                 String value = items.get(i).getAllElements().get(j).text();
-                System.out.println("killll :     "+key);
-                System.out.println("killll :     "+value);
+
                 switch (key) {
                     case ("title"):
                         tmp.setTitle(value);

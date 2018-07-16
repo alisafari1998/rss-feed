@@ -13,11 +13,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 
 public class RSSFeedProcessorTest {
 
@@ -41,10 +40,10 @@ public class RSSFeedProcessorTest {
             "مدافع تیم ملی فرانسه به رقابت با ادن هازارد واکنش نشان داد."
     };
 
-    private final Date pubDate [] = {
-            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:57:13 GMT").getTime()),
-            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:52:13 GMT").getTime()),
-            new Date(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:51:25 GMT").getTime()),
+    private final Timestamp pubDate [] = {
+        new Timestamp(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:57:13 GMT").getTime()),
+        new Timestamp(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:52:13 GMT").getTime()),
+        new Timestamp(DATE_FORMAT.parse("Sat, 07 Jul 2018 14:51:25 GMT").getTime()),
     };
 
     public RSSFeedProcessorTest() throws ParseException {
