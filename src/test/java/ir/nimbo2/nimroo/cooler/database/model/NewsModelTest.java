@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -65,7 +66,7 @@ public class NewsModelTest {
             assertEquals(result.getString("title"), news.getTitle());
             assertEquals(result.getString("link"), news.getLink());
             assertEquals(result.getString("description"), news.getDescription());
-            assertEquals(result.getDate("publish_date"), news.getPublishDate());
+            assertEquals(result.getTimestamp("publish_date"), news.getPublishDate());
             assertEquals(result.getString("news_body"), news.getNewsBody());
         }
         else {
@@ -99,7 +100,7 @@ public class NewsModelTest {
         model.setTitle("title" + tmp);
         model.setLink("link" + tmp);
         model.setDescription("description" + tmp);
-        model.setPublishDate(Timestamp.valueOf(LocalDateTime.now()));
+        model.setPublishDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
         model.setNewsBody("body" + tmp);
         return model;
 
