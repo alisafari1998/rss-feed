@@ -1,6 +1,5 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
-import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
@@ -28,6 +27,7 @@ public class ConfigModelTest {
     public static void connectToDB() throws Exception {
         dc = DatabaseConnection.getDatabaseConnection();
 	    dc.setupNewTestDatabase("config_model_test");
+        ConfigRepository.getRepository().init();
         ConfigRepository.getRepository().createConfigTable();
     }
 

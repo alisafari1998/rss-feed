@@ -1,6 +1,5 @@
 package ir.nimbo2.nimroo.cooler.database.repository;
 
-import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
@@ -22,6 +21,9 @@ public class ConfigRepository {
     private static final ConfigRepository REPO = new ConfigRepository();
 
     public ConfigRepository() {
+    }
+
+    public void init() {
         String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
                 + databaseName

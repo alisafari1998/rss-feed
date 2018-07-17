@@ -18,11 +18,15 @@ public class NewsRepository {
     private static NewsRepository REPO;
 
     private NewsRepository() {
+    }
+
+    public void init() {
         String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
         createNewsTableQuery = "CREATE TABLE IF NOT  EXISTS "+
                 databaseName +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
                 "title VARCHAR (255), link VARCHAR (255) NOT NULL, description VARCHAR (1024)," +
-                "publish_date DATETIME, news_body MEDIUMTEXT)";
+                "publish_date DATETIME, news_body MEDIUMTEXT," +
+                "config_id INTEGER NOT NULL, FOREIGN KEY (config_id) REFERENCES config(id))";
 
         insertNewsQuery = "INSERT INTO "+ databaseName +".news " +
                 "(title, link, description, publish_date, news_body, config_id) VALUES (?, ?, ?, ?, ?, ?)";

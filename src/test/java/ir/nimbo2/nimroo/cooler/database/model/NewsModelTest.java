@@ -25,6 +25,9 @@ public class NewsModelTest {
     public static void init() throws Exception {
         dc = DatabaseConnection.getDatabaseConnection();
         dc.setupNewTestDatabase("news_model_test");
+        ConfigRepository.getRepository().init();
+        NewsRepository.getRepository().init();
+
         ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();
     }
