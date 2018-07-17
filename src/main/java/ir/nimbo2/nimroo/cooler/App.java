@@ -1,7 +1,14 @@
 package ir.nimbo2.nimroo.cooler;
 
 import ir.nimbo2.nimroo.cooler.cli.Cli;
-import ir.nimbo2.nimroo.cooler.network.HttpRequest;
+import ir.nimbo2.nimroo.cooler.controller.Controller;
+import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
+import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
+import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
+
+import javax.naming.NamingException;
+import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 
 /**
  * Hello world!
@@ -9,9 +16,25 @@ import ir.nimbo2.nimroo.cooler.network.HttpRequest;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) {
+
         Cli cli = new Cli();
-        cli.run();
+        try {
+            DatabaseConnection.getDatabaseConnection().init();
+            NewsRepository.getRepository().init();
+            ConfigRepository.getRepository().init();
+            ConfigRepository.getRepository().createConfigTable();
+            NewsRepository.getRepository().createNewsTable();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+        //cli.run();
+
+        Controller.getControllerInstance().start();
     }
 }
