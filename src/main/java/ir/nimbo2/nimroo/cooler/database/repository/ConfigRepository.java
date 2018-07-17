@@ -22,18 +22,18 @@ public class ConfigRepository {
     private static final ConfigRepository REPO = new ConfigRepository();
 
     public ConfigRepository() {
-
+        String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
-                + Config.DATABASE_NAME
+                + databaseName
                 + ".config (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),"
                 + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT)";
 
-        insertConfigQuery = "INSERT INTO "+ Config.DATABASE_NAME +".config" +
+        insertConfigQuery = "INSERT INTO "+ databaseName +".config" +
                 " (site, rss, config) VALUES (?, ?, ?)";
 
-        loadConfigQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".config WHERE id=?";
+        loadConfigQuery = "SELECT * FROM " + databaseName + ".config WHERE id=?";
 
-        loadAllConfigsQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".config";
+        loadAllConfigsQuery = "SELECT * FROM " + databaseName + ".config";
 
     }
 

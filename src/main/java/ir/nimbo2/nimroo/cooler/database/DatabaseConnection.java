@@ -13,16 +13,37 @@ public class DatabaseConnection {
     private boolean init = false;
 
     private String createDatabaseQuery;
+    private String databaseName = Config.DATABASE_NAME;
+
     private ComboPooledDataSource cpds;
 
     public DatabaseConnection()  {
 
     }
 
-    public void init() throws SQLException, NamingException, PropertyVetoException {
-        if (init) {
+    public void setupNewTestDatabase(String testPostfix) throws PropertyVetoException, NamingException, SQLException {
+
+        if (testPostfix == null || testPostfix.isEmpty())
+            testPostfix = System.currentTimeMillis() + "";
+
+        databaseName = Config.DATABASE_NAME + "_" + testPostfix;
+        init();
+
+    }
+
+    public void destroyTestDatabase() throws SQLException {
+        if (databaseName.equals(Config.DATABASE_NAME))
             return;
-        }
+
+        Statement st = getConnection().createStatement();
+        st.execute("DROP DATABASE IF EXISTS " + databaseName);
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void init() throws SQLException, NamingException, PropertyVetoException {
 
         cpds = new ComboPooledDataSource();
         try {
@@ -34,11 +55,10 @@ public class DatabaseConnection {
         cpds.setUser(Config.DATABASE_USER);
         cpds.setPassword(Config.DATABASE_PASSWORD);
 
-        createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS " + Config.DATABASE_NAME +
+        createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS " + databaseName +
                 " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
         createDatabases();
-        init = true;
     }
 
     private void createDatabases() throws SQLException {
@@ -46,14 +66,14 @@ public class DatabaseConnection {
         try (Statement st = getConnection().createStatement()) {
             System.err.println(st);
             st.executeUpdate(createDatabaseQuery);
-
+//            throw new SQLException();
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println("Exception in createDatabase closing the connection.");
+            System.out.println(createDatabaseQuery);
+//            System.err.println("Exception in createDatabase closing the connection.");
             throw e;
         }
     }
-
 
     public Connection getConnection() throws SQLException {
         return cpds.getConnection();

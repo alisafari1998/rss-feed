@@ -1,6 +1,5 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
-import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
@@ -24,9 +23,8 @@ public class NewsModelTest {
 
     @BeforeClass
     public static void init() throws Exception {
-        Config.DATABASE_NAME += System.currentTimeMillis();
         dc = DatabaseConnection.getDatabaseConnection();
-        dc.init();
+        dc.setupNewTestDatabase("news_model_test");
         ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();
     }
@@ -45,7 +43,7 @@ public class NewsModelTest {
             repository.createNewsTable();
 
             Statement st = dc.getConnection().createStatement();
-            st.executeQuery("select * from " + Config.DATABASE_NAME+ ".news");
+            st.executeQuery("select * from " + dc.getDatabaseName() + ".news");
         } catch (SQLException e) {
             e.printStackTrace();
             assert false;
@@ -60,12 +58,11 @@ public class NewsModelTest {
     public void insertTest() throws Exception {
 
         news = getDummyModel();
-
         news.setConfigId(dummyConfig.getId());
         news.setId(repository.insertNews(news));
 
         Statement loadById = dc.getConnection().createStatement();
-        ResultSet result = loadById.executeQuery("SELECT * FROM "+ Config.DATABASE_NAME + ".news" +
+        ResultSet result = loadById.executeQuery("SELECT * FROM "+ dc.getDatabaseName() + ".news" +
                 " WHERE id="+news.getId());
 
         if (result.next()) {
@@ -75,7 +72,6 @@ public class NewsModelTest {
             assertEquals(result.getString("description"), news.getDescription());
             assertEquals(result.getTimestamp("publish_date"), news.getPublishDate());
             assertEquals(result.getString("news_body"), news.getNewsBody());
-            assertEquals(result.getLong("config_id"), news.getConfigId());
         }
         else {
             Assert.assertFalse("Item with id: " + news.getId() + " not found.", true);
@@ -98,8 +94,7 @@ public class NewsModelTest {
 
     @AfterClass
     public static void cleanUp() throws SQLException {
-        Statement st = dc.getConnection().createStatement();
-        st.execute("DROP DATABASE IF EXISTS " + Config.DATABASE_NAME);
+        dc.destroyTestDatabase();
     }
 
     /**

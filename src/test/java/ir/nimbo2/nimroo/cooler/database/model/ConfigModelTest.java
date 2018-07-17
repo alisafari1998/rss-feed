@@ -26,9 +26,8 @@ public class ConfigModelTest {
 
     @BeforeClass
     public static void connectToDB() throws Exception {
-        Config.DATABASE_NAME += System.currentTimeMillis();
         dc = DatabaseConnection.getDatabaseConnection();
-        dc.init();
+	    dc.setupNewTestDatabase("config_model_test");
         ConfigRepository.getRepository().createConfigTable();
     }
 
@@ -42,7 +41,7 @@ public class ConfigModelTest {
     public void createTableTest() throws SQLException {
 
         try (Statement st = dc.getConnection().createStatement()){
-            st.executeQuery("select * from "+Config.DATABASE_NAME + ".config");
+            st.executeQuery("select * from "+ dc.getDatabaseName() + ".config");
         } catch (SQLException e) {
             e.printStackTrace();
             assert false;
@@ -61,7 +60,7 @@ public class ConfigModelTest {
         dbContent.add(configModel);
         ConfigModel inserted = new ConfigModel();
         Statement st = dc.getConnection().createStatement();
-        ResultSet result = st.executeQuery("SELECT * FROM " + Config.DATABASE_NAME +
+        ResultSet result = st.executeQuery("SELECT * FROM " + dc.getDatabaseName() +
                 ".config" + " WHERE id=" + configModel.getId());
 
         if (result.next()) {
@@ -123,7 +122,6 @@ public class ConfigModelTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Statement st = dc.getConnection().createStatement();
-        st.execute("DROP DATABASE IF EXISTS " + Config.DATABASE_NAME);
+        dc.destroyTestDatabase();
     }
 }

@@ -1,7 +1,6 @@
 package ir.nimbo2.nimroo.cooler.database.repository;
 
 
-import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
@@ -16,20 +15,19 @@ public class NewsRepository {
     private String createNewsTableQuery;
     private String insertNewsQuery;
     private String loadNewsQuery;
-    private static final NewsRepository REPO = new NewsRepository();
+    private static NewsRepository REPO;
 
-    public NewsRepository() {
-
+    private NewsRepository() {
+        String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
         createNewsTableQuery = "CREATE TABLE IF NOT  EXISTS "+
-                Config.DATABASE_NAME +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
+                databaseName +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
                 "title VARCHAR (255), link VARCHAR (255) NOT NULL, description VARCHAR (1024)," +
-                "publish_date DATETIME, news_body MEDIUMTEXT, config_id INTEGER NOT NULL," +
-                " FOREIGN KEY (config_id) REFERENCES config(id)) ENGINE=INNODB;";
+                "publish_date DATETIME, news_body MEDIUMTEXT)";
 
-        insertNewsQuery = "INSERT INTO "+ Config.DATABASE_NAME +".news " +
+        insertNewsQuery = "INSERT INTO "+ databaseName +".news " +
                 "(title, link, description, publish_date, news_body, config_id) VALUES (?, ?, ?, ?, ?, ?)";
 
-        loadNewsQuery = "SELECT * FROM "+ Config.DATABASE_NAME + ".news" + " WHERE id=?";
+        loadNewsQuery = "SELECT * FROM "+ databaseName + ".news" + " WHERE id=?";
 
     }
 
@@ -109,6 +107,14 @@ public class NewsRepository {
     }
 
     public static NewsRepository getRepository() {
+
+        if (REPO == null) {
+            synchronized (NewsRepository.class) {
+                if (REPO == null) {
+                    REPO = new NewsRepository();
+                }
+            }
+        }
         return REPO;
     }
 }

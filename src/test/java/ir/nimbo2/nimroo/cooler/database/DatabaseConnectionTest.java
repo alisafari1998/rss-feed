@@ -41,9 +41,9 @@ public class DatabaseConnectionTest {
             db.init();
 
             Statement st =  DatabaseConnection.getDatabaseConnection().getConnection().createStatement();
-            ResultSet res = st.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"+ Config.DATABASE_NAME +"'");
+            ResultSet res = st.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"+ db.getDatabaseName() +"'");
             res.next();
-            assertEquals(res.getString("SCHEMA_NAME"), Config.DATABASE_NAME);
+            assertEquals(res.getString("SCHEMA_NAME"), db.getDatabaseName());
 
         } catch (Exception e) {
           e.printStackTrace();
