@@ -112,7 +112,7 @@ public class ConfigModelTest {
         assertEquals(configs, dbContent);
     }
 
-    private ConfigModel getDummyModel() {
+    public static ConfigModel getDummyModel() {
         ConfigModel cm = new ConfigModel();
         String tmp = "_" + System.currentTimeMillis();
         cm.setRSSLink("link" + tmp);

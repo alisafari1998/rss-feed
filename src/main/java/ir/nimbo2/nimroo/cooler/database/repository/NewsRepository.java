@@ -23,10 +23,11 @@ public class NewsRepository {
         createNewsTableQuery = "CREATE TABLE IF NOT  EXISTS "+
                 Config.DATABASE_NAME +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
                 "title VARCHAR (255), link VARCHAR (255) NOT NULL, description VARCHAR (1024)," +
-                "publish_date DATETIME, news_body MEDIUMTEXT)";
+                "publish_date DATETIME, news_body MEDIUMTEXT, config_id INTEGER NOT NULL," +
+                " FOREIGN KEY (config_id) REFERENCES config(id)) ENGINE=INNODB;";
 
         insertNewsQuery = "INSERT INTO "+ Config.DATABASE_NAME +".news " +
-                "(title, link, description, publish_date, news_body) VALUES (?, ?, ?, ?, ?)";
+                "(title, link, description, publish_date, news_body, config_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         loadNewsQuery = "SELECT * FROM "+ Config.DATABASE_NAME + ".news" + " WHERE id=?";
 
@@ -60,7 +61,7 @@ public class NewsRepository {
             insertPS.setString(3, newsModel.getDescription());
             insertPS.setTimestamp(4, newsModel.getPublishDate());
             insertPS.setString(5, newsModel.getNewsBody());
-
+            insertPS.setLong(6, newsModel.getConfigId());
             insertPS.executeUpdate();
             ResultSet result = insertPS.getGeneratedKeys();
             if (result.next()) {
@@ -98,6 +99,8 @@ public class NewsRepository {
         newsModel.setDescription(result.getString("description"));
         newsModel.setPublishDate(result.getTimestamp("publish_date"));
         newsModel.setNewsBody(result.getString("news_body"));
+        newsModel.setConfigId(result.getLong("config_id"));
+
         return newsModel;
     }
 

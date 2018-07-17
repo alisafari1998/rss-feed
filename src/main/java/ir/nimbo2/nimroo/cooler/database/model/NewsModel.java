@@ -1,6 +1,9 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
 
+import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class NewsModel {
@@ -11,7 +14,7 @@ public class NewsModel {
     private Timestamp publishDate;
     private String link;
     private String newsBody;
-
+    private long configId;
 
     public NewsModel() {
 
@@ -24,7 +27,8 @@ public class NewsModel {
 
         NewsModel news = (NewsModel)o;
         return news.id == id && news.title.equals(title) && news.link.equals(link)
-                && news.publishDate.equals(publishDate) && news.newsBody.equals(newsBody);
+                && news.publishDate.equals(publishDate) && news.newsBody.equals(newsBody)
+                && news.configId == configId;
     }
 
     public String getNewsBody() {
@@ -73,6 +77,18 @@ public class NewsModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setConfigId(long configId) {
+        this.configId = configId;
+    }
+
+    public long getConfigId() {
+        return configId;
+    }
+
+    public ConfigModel getConfigModel() throws SQLException {
+        return ConfigRepository.getRepository().loadConfig(configId);
     }
 
     @Override

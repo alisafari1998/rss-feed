@@ -2,6 +2,7 @@ package ir.nimbo2.nimroo.cooler.database.model;
 
 import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
+import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.junit.*;
 
@@ -19,12 +20,14 @@ public class NewsModelTest {
     static DatabaseConnection dc;
     NewsModel news;
     NewsRepository repository;
+    ConfigModel dummyConfig;
 
     @BeforeClass
     public static void init() throws Exception {
         Config.DATABASE_NAME += System.currentTimeMillis();
         dc = new DatabaseConnection();
         dc.init();
+        ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();
     }
 
@@ -32,6 +35,8 @@ public class NewsModelTest {
     public void beforeEach() throws Exception {
         news = new NewsModel();
         repository = NewsRepository.getRepository();
+        dummyConfig = ConfigModelTest.getDummyModel();
+        dummyConfig.setId(ConfigRepository.getRepository().insertConfig(dummyConfig));
     }
 
     @Test
@@ -55,6 +60,8 @@ public class NewsModelTest {
     public void insertTest() throws Exception {
 
         news = getDummyModel();
+
+        news.setConfigId(dummyConfig.getId());
         news.setId(repository.insertNews(news));
 
         Statement loadById = dc.getConnection().createStatement();
@@ -68,6 +75,7 @@ public class NewsModelTest {
             assertEquals(result.getString("description"), news.getDescription());
             assertEquals(result.getTimestamp("publish_date"), news.getPublishDate());
             assertEquals(result.getString("news_body"), news.getNewsBody());
+            assertEquals(result.getLong("config_id"), news.getConfigId());
         }
         else {
             Assert.assertFalse("Item with id: " + news.getId() + " not found.", true);
@@ -80,7 +88,8 @@ public class NewsModelTest {
     @Test
     public void loadTest() throws Exception {
 
-        NewsModel inserted = getDummyModel();;
+        NewsModel inserted = getDummyModel();
+        inserted.setConfigId(dummyConfig.getId());
         inserted.setId(repository.insertNews(inserted));
 
         news = repository.loadNews(inserted.getId());
@@ -93,6 +102,10 @@ public class NewsModelTest {
         st.execute("DROP DATABASE IF EXISTS " + Config.DATABASE_NAME);
     }
 
+    /**
+     * @implNote this function doesn't do anything about config_id since it's a foreign key...
+     * @return
+     */
     public NewsModel getDummyModel() {
 
         NewsModel model = new NewsModel();
