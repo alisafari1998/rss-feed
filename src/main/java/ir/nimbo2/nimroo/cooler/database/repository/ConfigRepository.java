@@ -121,8 +121,8 @@ public class ConfigRepository {
         return model;
     }
 
-    private Connection getConnection() {
-        return new DatabaseConnection().getConnection();
+    private Connection getConnection() throws SQLException {
+        return DatabaseConnection.getDatabaseConnection().getConnection();
     }
 
     public static ConfigRepository getRepository() {

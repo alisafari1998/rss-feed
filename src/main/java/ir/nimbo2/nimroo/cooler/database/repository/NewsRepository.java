@@ -104,8 +104,8 @@ public class NewsRepository {
         return newsModel;
     }
 
-    private Connection getConnection() {
-        return new DatabaseConnection().getConnection();
+    private Connection getConnection() throws SQLException {
+        return DatabaseConnection.getDatabaseConnection().getConnection();
     }
 
     public static NewsRepository getRepository() {

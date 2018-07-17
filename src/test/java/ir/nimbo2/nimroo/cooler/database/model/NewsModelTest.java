@@ -25,7 +25,7 @@ public class NewsModelTest {
     @BeforeClass
     public static void init() throws Exception {
         Config.DATABASE_NAME += System.currentTimeMillis();
-        dc = new DatabaseConnection();
+        dc = DatabaseConnection.getDatabaseConnection();
         dc.init();
         ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();

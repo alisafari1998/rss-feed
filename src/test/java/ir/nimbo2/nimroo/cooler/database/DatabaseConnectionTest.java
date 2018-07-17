@@ -17,18 +17,18 @@ public class DatabaseConnectionTest {
 
     @Test
     public void dbAccessTest() throws SQLException {
-        DatabaseConnection db = new DatabaseConnection();
+        DatabaseConnection db = DatabaseConnection.getDatabaseConnection();
         try {
-          db.getConnection().createStatement();
+            db.init();
+            Connection connection = db.getConnection();
+            connection.createStatement();
+            connection.close();
         } catch (SQLException e) {
           e.printStackTrace();
           assert false;
         } catch (Exception e) {
           e.printStackTrace();
           assert false;
-        }
-        finally{
-            db.getConnection().close();
         }
 
         assert true;
@@ -40,7 +40,7 @@ public class DatabaseConnectionTest {
         try {
             db.init();
 
-            Statement st =  new DatabaseConnection().getConnection().createStatement();
+            Statement st =  DatabaseConnection.getDatabaseConnection().getConnection().createStatement();
             ResultSet res = st.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"+ Config.DATABASE_NAME +"'");
             res.next();
             assertEquals(res.getString("SCHEMA_NAME"), Config.DATABASE_NAME);

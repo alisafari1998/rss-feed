@@ -27,7 +27,7 @@ public class ConfigModelTest {
     @BeforeClass
     public static void connectToDB() throws Exception {
         Config.DATABASE_NAME += System.currentTimeMillis();
-        dc = new DatabaseConnection();
+        dc = DatabaseConnection.getDatabaseConnection();
         dc.init();
         ConfigRepository.getRepository().createConfigTable();
     }
