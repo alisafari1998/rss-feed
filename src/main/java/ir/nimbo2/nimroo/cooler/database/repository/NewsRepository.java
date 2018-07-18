@@ -5,10 +5,7 @@ import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +16,7 @@ public class NewsRepository {
     private String loadNewsQuery;
     private static NewsRepository REPO;
     private String loadLast10NewsBySiteQuery;
+    private String countNewsBySiteInDateQuery;
 
     private NewsRepository() {
     }
@@ -39,6 +37,9 @@ public class NewsRepository {
         loadLast10NewsBySiteQuery = "SELECT title, description, news_body, publish_date FROM " + databaseName +
                 ".news as news INNER JOIN "+ databaseName +".config as config ON news.config_id=config.id WHERE config.site=? ORDER BY publish_date DESC LIMIT 10";
 
+        countNewsBySiteInDateQuery = "SELECT COUNT(*) AS row_count FROM " + databaseName +
+                ".news as news INNER JOIN "+ databaseName +
+                ".config as config ON news.config_id=config.id WHERE config.site=? AND publish_date BETWEEN ? AND ?";
     }
 
     public void createNewsTable() throws SQLException {
@@ -113,12 +114,30 @@ public class NewsRepository {
                 newsModel.setNewsBody(result.getString("news_body"));
                 finalResult.add(newsModel);
             }
-
             return finalResult;
+        }
+        finally {
+            c.close();
+        }
+    }
+
+    public long countNewsBySiteInDate(String site, Timestamp after, Timestamp before) throws SQLException, UnexpectedSQLBehaviorException {
+        Connection c = getConnection();
+        try(PreparedStatement preparedStatement = c.prepareStatement(countNewsBySiteInDateQuery)) {
+            preparedStatement.setString(1, site);
+            preparedStatement.setTimestamp(2, after);
+            preparedStatement.setTimestamp(3, before);
+            ResultSet result = preparedStatement.executeQuery();
+            if (result.next()) {
+                return result.getInt("row_count");
+            }
+
+            throw new UnexpectedSQLBehaviorException("Empty insert resultSet !!!");
         }
         finally{
             c.close();
         }
+
     }
 
     private NewsModel convertToNewsModel(ResultSet result) throws SQLException {

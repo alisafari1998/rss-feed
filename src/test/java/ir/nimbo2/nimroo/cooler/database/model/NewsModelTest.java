@@ -1,16 +1,15 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
+import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.junit.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +31,6 @@ public class NewsModelTest {
         ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();
 
-
         //Setup for 10LastTitleTest_Site.
         ConfigModel tmp = new ConfigModel();
         tmp.setSite("10LastTitleTest_Site");
@@ -45,6 +43,22 @@ public class NewsModelTest {
             NewsRepository.getRepository().insertNews(model);
         }
 
+
+        //Setup for countInDate
+        tmp = new ConfigModel();
+        tmp.setSite("CountSiteInDate");
+        tmp.setId(ConfigRepository.getRepository().insertConfig(tmp));
+        for(int i = -3; i < 4; i++) {
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(System.currentTimeMillis());
+            c.add(Calendar.DAY_OF_MONTH, i);
+            NewsModel model = NewsModelTest.getDummyModel();
+            model.setConfigId(tmp.getId());
+            model.setPublishDate(new Timestamp(c.getTimeInMillis()));
+            for (int j = 0; j < i+5; ++j) {
+                NewsRepository.getRepository().insertNews(model);
+            }
+        }
     }
 
     @Before
@@ -121,6 +135,16 @@ public class NewsModelTest {
             Assert.assertNotNull(models.get(i).getNewsBody());
         }
 
+    }
+
+    @Test
+    public void countNewsBySiteInDate() throws SQLException, UnexpectedSQLBehaviorException {
+        for (int i = -3; i < 4; ++i) {
+            long count = NewsRepository.getRepository().countNewsBySiteInDate("CountSiteInDate",
+                    Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(i)),
+                    Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(i+1)));
+            assertEquals(i+5, count);
+        }
     }
 
     @AfterClass
