@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +31,20 @@ public class NewsModelTest {
 
         ConfigRepository.getRepository().createConfigTable();
         NewsRepository.getRepository().createNewsTable();
+
+
+        //Setup for 10LastTitleTest_Site.
+        ConfigModel tmp = new ConfigModel();
+        tmp.setSite("10LastTitleTest_Site");
+        tmp.setId(ConfigRepository.getRepository().insertConfig(tmp));
+        for (int i = 0; i < 20; ++i) {
+            NewsModel model = NewsModelTest.getDummyModel();
+            model.setTitle(i+"_10LastTitle");
+            model.getPublishDate().setTime(model.getPublishDate().getTime() - i * 10000);
+            model.setConfigId(tmp.getId());
+            NewsRepository.getRepository().insertNews(model);
+        }
+
     }
 
     @Before
@@ -95,6 +110,19 @@ public class NewsModelTest {
         assertEquals(news, inserted);
     }
 
+    @Test
+    public void loadLast10NewsTest() throws SQLException {
+        List<NewsModel> models = repository.loadLast10NewsBySite("10LastTitleTest_Site");
+
+        for(int i = 0; i < 10; i++) {
+            assertEquals(models.get(i).getTitle(), i+"_10LastTitle");
+            Assert.assertNotNull(models.get(i).getDescription());
+            Assert.assertNotNull(models.get(i).getPublishDate());
+            Assert.assertNotNull(models.get(i).getNewsBody());
+        }
+
+    }
+
     @AfterClass
     public static void cleanUp() throws SQLException {
         dc.destroyTestDatabase();
@@ -104,7 +132,7 @@ public class NewsModelTest {
      * @implNote this function doesn't do anything about config_id since it's a foreign key...
      * @return
      */
-    public NewsModel getDummyModel() {
+    public static NewsModel getDummyModel() {
 
         NewsModel model = new NewsModel();
         String tmp = "_(سلام ؟!)ـ" + System.currentTimeMillis();
