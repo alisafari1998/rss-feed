@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsRepository {
 
@@ -16,6 +18,7 @@ public class NewsRepository {
     private String insertNewsQuery;
     private String loadNewsQuery;
     private static NewsRepository REPO;
+    private String loadLast10NewsBySiteQuery;
 
     private NewsRepository() {
     }
@@ -32,6 +35,9 @@ public class NewsRepository {
                 "(title, link, description, publish_date, news_body, config_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         loadNewsQuery = "SELECT * FROM "+ databaseName + ".news" + " WHERE id=?";
+
+        loadLast10NewsBySiteQuery = "SELECT title, description, news_body, publish_date FROM " + databaseName +
+                ".news as news INNER JOIN "+ databaseName +".config as config ON news.config_id=config.id WHERE config.site=? ORDER BY publish_date DESC LIMIT 10";
 
     }
 
@@ -87,6 +93,28 @@ public class NewsRepository {
             }
 
             return null;
+        }
+        finally{
+            c.close();
+        }
+    }
+
+    public List<NewsModel> loadLast10NewsBySite(String site) throws SQLException {
+        Connection c = getConnection();
+        try(PreparedStatement preparedStatement = c.prepareStatement(loadLast10NewsBySiteQuery)) {
+            preparedStatement.setString(1, site);
+            ResultSet result = preparedStatement.executeQuery();
+            List<NewsModel> finalResult = new ArrayList<>();
+            while(result.next()) {
+                NewsModel newsModel = new NewsModel();
+                newsModel.setTitle(result.getString("title"));
+                newsModel.setDescription(result.getString("description"));
+                newsModel.setPublishDate(result.getTimestamp("publish_date"));
+                newsModel.setNewsBody(result.getString("news_body"));
+                finalResult.add(newsModel);
+            }
+
+            return finalResult;
         }
         finally{
             c.close();

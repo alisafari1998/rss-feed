@@ -1,5 +1,6 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
+import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
@@ -109,6 +110,20 @@ public class ConfigModelTest {
         List<ConfigModel> configs = repository.loadAllConfigs();
         assertEquals(configs.size(), dbContent.size());
         assertEquals(configs, dbContent);
+    }
+
+    @Test
+    public void updateLatestNewsTest() throws SQLException, UnexpectedSQLBehaviorException {
+        ConfigModel cm = getDummyModel();
+        ConfigRepository cr = ConfigRepository.getRepository();
+        cm.setId(cr.insertConfig(cm));
+        cm.setLatestNews("booooo");
+
+        cr.updateLatestNews(cm);
+
+        ConfigModel tmp = cr.loadConfig(cm.getId());
+        assertEquals(tmp, cm);
+
     }
 
     public static ConfigModel getDummyModel() {

@@ -18,6 +18,8 @@ public class ConfigRepository {
     private String insertConfigQuery;
     private String loadConfigQuery;
     private String loadAllConfigsQuery;
+    private String updateLatestNewsQuery;
+
     private static final ConfigRepository REPO = new ConfigRepository();
 
     public ConfigRepository() {
@@ -28,7 +30,7 @@ public class ConfigRepository {
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
                 + databaseName
                 + ".config (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),"
-                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT)";
+                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT, latest_news VARCHAR(4096))";
 
         insertConfigQuery = "INSERT INTO "+ databaseName +".config" +
                 " (site, rss, config) VALUES (?, ?, ?)";
@@ -37,6 +39,7 @@ public class ConfigRepository {
 
         loadAllConfigsQuery = "SELECT * FROM " + databaseName + ".config";
 
+        updateLatestNewsQuery = "UPDATE "+ databaseName + ".config SET latest_news=? WHERE id=?";
     }
 
     public void createConfigTable() throws SQLException {
@@ -112,6 +115,22 @@ public class ConfigRepository {
         }
     }
 
+    public void updateLatestNews(ConfigModel configModel) throws SQLException {
+        Connection c = getConnection();
+        try(PreparedStatement updateLatestNews = c.prepareStatement(updateLatestNewsQuery)){
+
+            updateLatestNews.setString(1, configModel.getLatestNews());
+            updateLatestNews.setLong(2, configModel.getId());
+            updateLatestNews.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            c.close();
+        }
+    }
+
     private ConfigModel loadConfigModelFromResultSet(ResultSet result) throws SQLException {
         ConfigModel model = new ConfigModel();
 
@@ -119,6 +138,8 @@ public class ConfigRepository {
         model.setSite(result.getString("site"));
         model.setRSSLink(result.getString("rss"));
         model.setConfig(result.getString("config"));
+        model.setLatestNews(result.getString("latest_news"));
+
 
         return model;
     }
