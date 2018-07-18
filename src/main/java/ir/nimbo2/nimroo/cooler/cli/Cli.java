@@ -1,18 +1,22 @@
 package ir.nimbo2.nimroo.cooler.cli;
 
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
+import ir.nimbo2.nimroo.cooler.controller.Controller;
 
 import java.util.Scanner;
 
 public class Cli {
-    private Scanner scanner = new Scanner(System.in);
+    private Controller controller = Controller.getControllerInstance();
+    private Scanner scanner;
     private String choice = "";
     private boolean exit;
     private boolean valid;
     private String websiteUrl, rssUrl, config;
     private String partOfNews;
     private String date;
+
+    public Cli() {
+        scanner = new Scanner(System.in);
+    }
 
     public void run() {
         while (!choice.equals("6")) {                       // while(true) ?
@@ -41,7 +45,8 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    // todo
+                    // todo boolean ?
+                    controller.addRssWebsite(websiteUrl, rssUrl, config);
                     break;
 
                 case "2":
@@ -49,7 +54,8 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    // todo
+                    // todo String ?
+                    controller.searchNews(partOfNews);
                     break;
 
                 case "3":
@@ -57,7 +63,8 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    //todo
+                    //todo String
+                    controller.getLastTenNews(websiteUrl);
                     break;
 
                 case "4":
@@ -66,6 +73,7 @@ public class Cli {
                         break;
                     }
                     //todo
+                    controller.getThisDayNewsNumber(websiteUrl);
                     break;
 
                 case "5":
@@ -78,6 +86,8 @@ public class Cli {
                     if (exit) {
                         break;
                     }
+                    //todo parse date ?
+                    controller.getADayNewsNumber(websiteUrl, date);
                     break;
 
                 case "6":
@@ -164,15 +174,15 @@ public class Cli {
     }
 
     //TODO
-    private boolean urlChecker(String url) {
+    boolean urlChecker(String url) {
+        return url.matches("(http://|https://)([a-zA-Z0-9]+)\\.[a-z]{3}(/[a-zA-Z0-9])*");
+    }
+
+    boolean configChecker(String config) {
         return true;
     }
 
-    private boolean configChecker(String config) {
-        return true;
-    }
-
-    private boolean dateChecker(String date) {
+    boolean dateChecker(String date) {
         return true;
     }
 }
