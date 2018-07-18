@@ -11,7 +11,7 @@ public class NewsProcessor {
     static String userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36";
     public static String getNews(String link, String config) throws NoNewsBodyFoundException, IOException {
         Document document = null;
-        Jsoup.connect(link).validateTLSCertificates(false).userAgent(userAgent).get();
+        Jsoup.connect(link).validateTLSCertificates(false).userAgent(userAgent).timeout(10000).get();
         document = Jsoup.connect(link).validateTLSCertificates(false).get();
 
         String[] configParts = config.split("#");

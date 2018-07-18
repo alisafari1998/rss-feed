@@ -3,7 +3,10 @@ package ir.nimbo2.nimroo.cooler.controller;
 import ir.nimbo2.nimroo.cooler.concurency.SiteTask;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
+import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
+import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Controller {
+    Logger logger = Logger.getLogger(Controller.class);
+
     private ScheduledExecutorService rssExecutor;
 
     private ScheduledExecutorService htmlExecutor;
@@ -47,7 +52,16 @@ public class Controller {
     }
 
     public void getLastTenNews(String websiteUrl) {
-
+        List<NewsModel> lastTenNews = null;
+        try {
+            lastTenNews = NewsRepository.getRepository().loadLast10NewsBySite(websiteUrl);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (NewsModel newsModel: lastTenNews) {
+            System.out.println(newsModel);
+            System.out.println("-------------------------------------------------------------------------------------\n");
+        }
     }
 
     public void getThisDayNewsNumber(String websiteUrl) {
@@ -63,7 +77,8 @@ public class Controller {
         try {
             sites = ConfigRepository.getRepository().loadAllConfigs();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.debug("Exception", e);
             return;
         }
 

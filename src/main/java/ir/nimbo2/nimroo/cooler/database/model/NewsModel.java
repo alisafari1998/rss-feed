@@ -93,7 +93,12 @@ public class NewsModel {
 
     @Override
     public String toString() {
-        return "NewsModel:\n" + "Title:\t" + title + "\nLink\t" + link + "\nDescription:\t" + description +
-                "\nPublishDate:\t" + (publishDate!=null ? publishDate.toString() : null)+ "\nNewsBody:\t" + newsBody;
+
+        return "NewsModel:" +
+                (title!=null ? "\n\tTitle:\t" + title : "") +
+                (link!=null ? "\n\tLink:\t" + link : "") +
+                (description!=null ?"\n\tDescription:\t" + description : "") +
+                (publishDate!=null ? "\n\tPublishDate:\t"+publishDate.toString() : "") +
+                (newsBody!=null ? "\n\tNewsBody:\t" + newsBody : "");
     }
 }

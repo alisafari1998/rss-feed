@@ -175,7 +175,7 @@ public class Cli {
 
     //TODO
     boolean urlChecker(String url) {
-        return url.matches("(http://|https://)([a-zA-Z0-9]+)\\.[a-z]{3}(/[a-zA-Z0-9])*");
+        return true;/*url.matches("(http://|https://)([a-zA-Z0-9]+)\\.[a-z]{3}(/[a-zA-Z0-9])*");*/
     }
 
     boolean configChecker(String config) {
