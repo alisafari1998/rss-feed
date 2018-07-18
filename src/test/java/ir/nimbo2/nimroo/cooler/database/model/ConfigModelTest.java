@@ -69,7 +69,7 @@ public class ConfigModelTest {
             inserted.setSite(result.getString(2));
             inserted.setRSSLink(result.getString(3));
             inserted.setConfig(result.getString(4));
-            inserted.setDateConfig(result.getString(5));
+            inserted.setDateConfig(result.getString("date_config"));
 
             assertEquals(inserted, configModel);
         }
