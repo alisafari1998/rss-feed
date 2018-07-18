@@ -9,8 +9,8 @@ import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -65,11 +65,23 @@ public class Controller {
     }
 
     public void getThisDayNewsNumber(String websiteUrl) {
-
+        try {
+            System.out.println(NewsRepository.getRepository().countTodayNewsBySiteInDate(websiteUrl));
+        } catch (SQLException e) {      // todo logger
+            e.printStackTrace();
+        } catch (UnexpectedSQLBehaviorException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void getADayNewsNumber(String websiteUrl, String date) {
-
+    public void getADayNewsNumber(String websiteUrl, Timestamp date) {
+        try {
+            System.out.println(NewsRepository.getRepository().countADayNewsBySiteInDate(websiteUrl, date));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (UnexpectedSQLBehaviorException e) {
+            e.printStackTrace();
+        }
     }
 
     public void start() {

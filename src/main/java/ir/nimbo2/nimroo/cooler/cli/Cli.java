@@ -2,6 +2,11 @@ package ir.nimbo2.nimroo.cooler.cli;
 
 import ir.nimbo2.nimroo.cooler.controller.Controller;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Cli {
@@ -12,7 +17,9 @@ public class Cli {
     private boolean valid;
     private String websiteUrl, rssUrl, config;
     private String partOfNews;
-    private String date;
+    private String dateString;
+    private Date parsedDate;
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public Cli() {
         scanner = new Scanner(System.in);
@@ -86,8 +93,8 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    //todo parse date ?
-                    controller.getADayNewsNumber(websiteUrl, date);
+
+                    controller.getADayNewsNumber(websiteUrl, new Timestamp(parsedDate.getTime()));
                     break;
 
                 case "6":
@@ -162,15 +169,16 @@ public class Cli {
         while (!valid) {
             System.out.print("Enter Date");
             System.out.println(" (or type exit)");
-            date = scanner.next();
-            if (date.equals("exit")) {
+            dateString = scanner.next();
+            if (dateString.equals("exit")) {
                 exit = true;
                 return;
             }
-            if (!(valid = dateChecker(date))) {
+            if (!(valid = dateChecker(dateString))) {
                 System.out.println("invalid date");
             }
         }
+        parsedDate = dateParser(dateString);
     }
 
     //TODO
@@ -183,6 +191,22 @@ public class Cli {
     }
 
     boolean dateChecker(String date) {
+        try {
+            dateFormat.parse(date);
+        } catch (ParseException e) {
+            return false;
+        }
+
         return true;
+    }
+
+    Date dateParser(String date) {
+        Date ans = null;
+        try {
+            ans = dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return ans;
     }
 }
