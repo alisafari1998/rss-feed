@@ -17,6 +17,9 @@ public class ConfigModel {
      */
     String config;
 
+
+    String latestNews;
+
     public ConfigModel() {
 
     }
@@ -60,5 +63,13 @@ public class ConfigModel {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    public String getLatestNews() {
+        return latestNews;
+    }
+
+    public void setLatestNews(String latestNews) {
+        this.latestNews = latestNews;
     }
 }
