@@ -69,6 +69,7 @@ public class ConfigModelTest {
             inserted.setSite(result.getString(2));
             inserted.setRSSLink(result.getString(3));
             inserted.setConfig(result.getString(4));
+            inserted.setDateConfig(result.getString(5));
 
             assertEquals(inserted, configModel);
         }
@@ -132,6 +133,7 @@ public class ConfigModelTest {
         cm.setRSSLink("link" + tmp);
         cm.setSite("site" + tmp);
         cm.setConfig("config" + tmp);
+        cm.setDateConfig("EEE, dd MMM yyyy HH:mm:ss zzz");
         return cm;
     }
 

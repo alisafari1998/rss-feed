@@ -30,10 +30,10 @@ public class ConfigRepository {
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
                 + databaseName
                 + ".config (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),"
-                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT, latest_news VARCHAR(4096))";
+                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT, latest_news VARCHAR(4096), date_config VARCHAR(32))";
 
         insertConfigQuery = "INSERT INTO "+ databaseName +".config" +
-                " (site, rss, config) VALUES (?, ?, ?)";
+                " (site, rss, config, date_config) VALUES (?, ?, ?, ?)";
 
         loadConfigQuery = "SELECT * FROM " + databaseName + ".config WHERE id=?";
 
@@ -66,6 +66,7 @@ public class ConfigRepository {
             insertPS.setString(1, configModel.getSite());
             insertPS.setString(2, configModel.getRSSLink());
             insertPS.setString(3, configModel.getConfig());
+            insertPS.setString(4, configModel.getDateConfig());
             insertPS.executeUpdate();
 
             ResultSet result = insertPS.getGeneratedKeys();
@@ -139,6 +140,7 @@ public class ConfigRepository {
         model.setRSSLink(result.getString("rss"));
         model.setConfig(result.getString("config"));
         model.setLatestNews(result.getString("latest_news"));
+        model.setDateConfig(result.getString("date_config"));
 
 
         return model;

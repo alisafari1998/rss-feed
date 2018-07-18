@@ -11,6 +11,7 @@ public class ConfigModel {
     private long id;
     private String site;
     private String rssLink;
+    private String dateConfig;
 
     /**
      * TODO This needs real documentation.
@@ -32,7 +33,7 @@ public class ConfigModel {
         }
 
         ConfigModel cm = (ConfigModel)o;
-        return cm.id == id && cm.config.equals(config) && cm.site.equals(site) && cm.rssLink.equals(rssLink);
+        return cm.id == id && cm.config.equals(config) && cm.site.equals(site) && cm.rssLink.equals(rssLink) && cm.dateConfig.equals(dateConfig);
     }
 
     public long getId() { return id; }
@@ -49,6 +50,8 @@ public class ConfigModel {
         return site;
     }
 
+    public String getDateConfig() {return dateConfig;}
+
     public void setId(long id) {
         this.id = id;
     }
@@ -64,6 +67,8 @@ public class ConfigModel {
     public void setConfig(String config) {
         this.config = config;
     }
+
+    public void setDateConfig(String dateConfig) {this.dateConfig = dateConfig;}
 
     public String getLatestNews() {
         return latestNews;
