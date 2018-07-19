@@ -131,7 +131,7 @@ public class Controller {
         }
 
         for (ConfigModel configModel : sites) {
-
+            logger.info("Going through site: " + configModel.getSite());
             rssExecutor.scheduleWithFixedDelay(new SiteTask(configModel, htmlExecutor, rssExecutor), 0, 1, TimeUnit.MINUTES);
 
         }

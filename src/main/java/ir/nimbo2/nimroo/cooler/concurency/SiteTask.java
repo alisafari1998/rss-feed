@@ -3,15 +3,14 @@ package ir.nimbo2.nimroo.cooler.concurency;
 import ir.nimbo2.nimroo.cooler.Processors.RSSFeedProcessor;
 import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
+import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import org.apache.log4j.Logger;
-import org.apache.log4j.pattern.LogEvent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
+import java.sql.SQLException;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class SiteTask implements Runnable {
     Logger logger = Logger.getLogger(SiteTask.class);
@@ -54,10 +53,29 @@ public class SiteTask implements Runnable {
             }
 
             news.setConfigId(configModel.getId());
+            try {
+                ConfigRepository.getRepository().loadLatestNews(configModel.getId());
+            } catch (SQLException e) {
+                System.err.println("Database access problem !!!");
+                logger.debug("Exception", e);
+            }
 
-//            if
+            if(news.getLink() != null && news.getLink().equals(configModel.getLatestNews()))
+                break;
 
             htmlExecutor.submit(new NewsTask(news, configModel.getConfig(), htmlExecutor));
         }
+
+        if (!rssFeedProcessor.getResults().isEmpty()) {
+            NewsModel model = rssFeedProcessor.getResults().get(0);
+            configModel.setLatestNews(model.getLink());
+            try {
+                ConfigRepository.getRepository().updateLatestNews(configModel);
+            } catch (SQLException e) {
+                System.err.println("Database access problem !!!");
+                logger.debug("Exception", e);
+            }
+        }
+
     }
 }

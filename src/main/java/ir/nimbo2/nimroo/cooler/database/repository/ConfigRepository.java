@@ -19,6 +19,7 @@ public class ConfigRepository {
     private String loadConfigQuery;
     private String loadAllConfigsQuery;
     private String updateLatestNewsQuery;
+    private String loadLatestNewsQuery;
 
     private static final ConfigRepository REPO = new ConfigRepository();
 
@@ -30,7 +31,7 @@ public class ConfigRepository {
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
                 + databaseName
                 + ".config (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),"
-                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT, latest_news VARCHAR(4096), date_config VARCHAR(32))";
+                + "site VARCHAR(512) NOT NULL, rss VARCHAR(1024), config TEXT, latest_news VARCHAR(4096) DEFAULT null, date_config VARCHAR(32))";
 
         insertConfigQuery = "INSERT INTO "+ databaseName +".config" +
                 " (site, rss, config, date_config) VALUES (?, ?, ?, ?)";
@@ -40,6 +41,8 @@ public class ConfigRepository {
         loadAllConfigsQuery = "SELECT * FROM " + databaseName + ".config";
 
         updateLatestNewsQuery = "UPDATE "+ databaseName + ".config SET latest_news=? WHERE id=?";
+
+        loadLatestNewsQuery = "SELECT latest_news FROM " + databaseName + ".config WHERE id=?";
     }
 
     public void createConfigTable() throws SQLException {
@@ -129,6 +132,23 @@ public class ConfigRepository {
         }
         finally{
             c.close();
+        }
+    }
+
+    public ConfigModel loadLatestNews(long id) throws SQLException {
+        ConfigModel cm = new ConfigModel();
+        Connection c = getConnection();
+        try(PreparedStatement loadLatestNews = c.prepareStatement(loadLatestNewsQuery)) {
+            loadLatestNews.setLong(1, id);
+            ResultSet result = loadLatestNews.executeQuery();
+            cm.setId(id);
+            if (result.next()) {
+                cm.setLatestNews(result.getString("latest_news"));
+            }
+        }
+        finally {
+            c.close();
+            return cm;
         }
     }
 
