@@ -127,6 +127,17 @@ public class ConfigModelTest {
 
     }
 
+    @Test
+    public void loadLatestNewsTest() throws SQLException, UnexpectedSQLBehaviorException {
+        ConfigModel cm = getDummyModel();
+        ConfigRepository cr = ConfigRepository.getRepository();
+        cm.setLatestNews("bam bam bam");
+        cm.setId(cr.insertConfig(cm));
+        cr.updateLatestNews(cm);
+        ConfigModel tmp = cr.loadLatestNews(cm.getId());
+        assertEquals(tmp.getLatestNews(), cm.getLatestNews());
+    }
+
     public static ConfigModel getDummyModel() {
         ConfigModel cm = new ConfigModel();
         String tmp = "_" + System.currentTimeMillis();
