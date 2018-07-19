@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NewsModelTest {
 
@@ -121,7 +122,7 @@ public class NewsModelTest {
         inserted.setId(repository.insertNews(inserted));
 
         news = repository.loadNews(inserted.getId());
-        assertEquals(news, inserted);
+        assertTrue(areEquals(news, inserted));
     }
 
     @Test
@@ -167,6 +168,15 @@ public class NewsModelTest {
         model.setNewsBody("body" + tmp);
         return model;
 
+    }
+
+
+    public boolean areEquals(NewsModel newsModel1, NewsModel newsModel2) {
+        return newsModel2.getId() == newsModel1.getId() && newsModel2.getTitle().equals(newsModel1.getTitle())
+                && newsModel2.getLink().equals(newsModel1.getLink())
+                && newsModel2.getPublishDate().equals(newsModel1.getPublishDate())
+                && newsModel2.getNewsBody().equals(newsModel1.getNewsBody())
+                && newsModel2.getConfigId() == newsModel1.getConfigId();
     }
 
 }

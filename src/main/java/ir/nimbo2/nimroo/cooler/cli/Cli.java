@@ -52,7 +52,7 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    // todo boolean ?
+
                     controller.addRssWebsite(websiteUrl, rssUrl, config);
                     break;
 
@@ -61,8 +61,24 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    // todo String ?
-                    controller.searchNews(partOfNews);
+                    System.out.println("1.Search in title");
+                    System.out.println("2.Search in body");
+                    System.out.println("3.Search in title & body");
+                    String searchType = scanner.next();
+                    switch (searchType) {
+                        case "1":
+                            controller.searchNewsByTitle(partOfNews);
+                            break;
+                        case "2":
+                            controller.searchNewsByBody(partOfNews);
+                            break;
+                        case "3":
+                            controller.searchNews(partOfNews);
+                            break;
+                        default:
+                            invalidInput();
+                            break;
+                    }
                     break;
 
                 case "3":
@@ -70,7 +86,7 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    //todo String
+
                     controller.getLastTenNews(websiteUrl);
                     break;
 
@@ -79,7 +95,7 @@ public class Cli {
                     if (exit) {
                         break;
                     }
-                    //todo
+
                     controller.getThisDayNewsNumber(websiteUrl);
                     break;
 
@@ -100,7 +116,7 @@ public class Cli {
                 case "6":
                     break;
                 default:
-                    System.out.println("Invalid input.");
+                    invalidInput();
                     break;
             }
         }
@@ -117,7 +133,7 @@ public class Cli {
                 return;
             }
             if (!(valid = urlChecker(websiteUrl))){
-                System.out.println("invalid input.");
+                invalidInput();
             }
         }
     }
@@ -208,5 +224,9 @@ public class Cli {
             e.printStackTrace();
         }
         return ans;
+    }
+
+    private void invalidInput() {
+        System.out.println("invalid input.");
     }
 }

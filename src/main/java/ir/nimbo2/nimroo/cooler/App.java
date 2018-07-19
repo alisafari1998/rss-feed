@@ -32,13 +32,10 @@ public class App {
             ConfigRepository.getRepository().createConfigTable();
             NewsRepository.getRepository().createNewsTable();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        } catch (PropertyVetoException e) {
+        } catch (SQLException | NamingException | PropertyVetoException e) {
             e.printStackTrace();
         }
+
         Controller.getControllerInstance().start();
         cli.run();
     }

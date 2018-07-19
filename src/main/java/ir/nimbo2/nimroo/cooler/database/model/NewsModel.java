@@ -20,15 +20,16 @@ public class NewsModel {
 
     }
 
-    public boolean equals(Object o) {
+    @Override
+    public int hashCode() {
+        return newsBody.hashCode();  //better in db ?
+    }
 
+    @Override
+    public boolean equals(Object o) {
         if (!(o instanceof NewsModel))
             return false;
-
-        NewsModel news = (NewsModel)o;
-        return news.id == id && news.title.equals(title) && news.link.equals(link)
-                && news.publishDate.equals(publishDate) && news.newsBody.equals(newsBody)
-                && news.configId == configId;
+        return o.hashCode() == hashCode();
     }
 
     public String getNewsBody() {

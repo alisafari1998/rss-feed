@@ -10,6 +10,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class NewsRepository {
@@ -45,8 +46,8 @@ public class NewsRepository {
         countNewsBySiteInDateQuery = "SELECT COUNT(*) AS row_count FROM " + databaseName +
                 ".news as news INNER JOIN "+ databaseName +
                 ".config as config ON news.config_id=config.id WHERE config.site=? AND publish_date BETWEEN ? AND ?";
-        searchInTitleQuery = "select * from " + Config.DATABASE_NAME + ".news" + "WHERE title LIKE \"%?%\"";
-        searchInBodyQuery = "select * from " + Config.DATABASE_NAME + ".news" + "WHERE body LIKE \"%?%\"";
+        searchInTitleQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".news" + " WHERE title LIKE ?";
+        searchInBodyQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".news" + " WHERE news_body LIKE ?";
 
     }
 
@@ -170,12 +171,13 @@ public class NewsRepository {
         return newsModel;
     }
 
-    private List<NewsModel> searchNews(String toSearch, SearchType type) throws SQLException {
-        Connection c = getConnection();
-        ArrayList<NewsModel> searchResult = new ArrayList<>();
-        try(PreparedStatement preparedStatement = c.prepareStatement(type == SearchType.TITLE_SEARCH ? searchInTitleQuery : searchInBodyQuery)) {
-            preparedStatement.setString(1, toSearch);
-            ResultSet result = preparedStatement.executeQuery();
+    private HashSet<NewsModel> searchNews(String toSearch, SearchType type) throws SQLException {
+        HashSet<NewsModel> searchResult = new HashSet<>();
+        try(Connection c = getConnection();
+            PreparedStatement preparedStatement = c.prepareStatement(type == SearchType.TITLE_SEARCH ?
+                    searchInTitleQuery : searchInBodyQuery)) {
+            preparedStatement.setString(1, "%" + toSearch + "%");
+            ResultSet result  = preparedStatement.executeQuery();
             while(result.next()) {
                 searchResult.add(convertToNewsModel(result));
             }
@@ -188,11 +190,11 @@ public class NewsRepository {
         return null;
     }
 
-    public List<NewsModel> searchInTitle(String toSearch) throws SQLException {
+    public HashSet<NewsModel> searchInTitle(String toSearch) throws SQLException {
         return searchNews(toSearch, SearchType.TITLE_SEARCH);
     }
 
-    public List<NewsModel> searchInBody(String toSearch) throws SQLException {
+    public HashSet<NewsModel> searchInBody(String toSearch) throws SQLException {
         return searchNews(toSearch, SearchType.BODY_SEARCH);
     }
 

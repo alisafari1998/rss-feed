@@ -10,13 +10,14 @@ import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Controller {
-    Logger logger = Logger.getLogger(Controller.class);
+    private Logger logger = Logger.getLogger(Controller.class);
 
     private ScheduledExecutorService rssExecutor;
 
@@ -47,8 +48,43 @@ public class Controller {
 
     }
 
-    public void searchNews(String partOfNews) {
+    public void searchNewsByTitle(String partOfNews) {
+        HashSet<NewsModel> newsByTitle = new HashSet<>();
+        try {
+            newsByTitle = NewsRepository.getRepository().searchInTitle(partOfNews);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (NewsModel newsModel: newsByTitle) {
+            System.out.println(newsModel);
+        }
+    }
 
+    public void searchNewsByBody(String partOfNews) {
+        HashSet<NewsModel> newsByBody = new HashSet<>();
+        try {
+            newsByBody = NewsRepository.getRepository().searchInBody(partOfNews);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        for (NewsModel newsModel: newsByBody) {
+            System.out.println(newsModel);
+        }
+    }
+
+    public void searchNews(String partOfNews) {
+        HashSet<NewsModel> newsByTitle = new HashSet<>();
+        HashSet<NewsModel> newsByBody = new HashSet<>();
+        try {
+            newsByTitle = NewsRepository.getRepository().searchInTitle(partOfNews);
+            newsByBody = NewsRepository.getRepository().searchInBody(partOfNews);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        newsByBody.addAll(newsByTitle);
+        for (NewsModel newsModel: newsByBody) {
+            System.out.println(newsModel);
+        }
     }
 
     public void getLastTenNews(String websiteUrl) {
