@@ -41,7 +41,7 @@ public class ConfigModelTest {
     @Test
     public void createTableTest() throws SQLException {
 
-        try (Statement st = dc.getConnection().createStatement()){
+        try (Statement st = dc.getConnection().createStatement()) {
             st.executeQuery("select * from "+ dc.getDatabaseName() + ".config");
         } catch (SQLException e) {
             e.printStackTrace();
