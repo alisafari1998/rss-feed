@@ -1,6 +1,7 @@
 package ir.nimbo2.nimroo.cooler.database.repository;
 
 
+import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
@@ -17,6 +18,8 @@ public class NewsRepository {
     private static NewsRepository REPO;
     private String loadLast10NewsBySiteQuery;
     private String countNewsBySiteInDateQuery;
+    private String searchInTitleQuery;
+    private String searchInBodyQuery;
 
     private NewsRepository() {
     }
@@ -40,6 +43,9 @@ public class NewsRepository {
         countNewsBySiteInDateQuery = "SELECT COUNT(*) AS row_count FROM " + databaseName +
                 ".news as news INNER JOIN "+ databaseName +
                 ".config as config ON news.config_id=config.id WHERE config.site=? AND publish_date BETWEEN ? AND ?";
+        searchInTitleQuery = "select * from " + Config.DATABASE_NAME + ".news" + "WHERE title LIKE \"%?%\"";
+        searchInBodyQuery = "select * from " + Config.DATABASE_NAME + ".news" + "WHERE body LIKE \"%?%\"";
+
     }
 
     public void createNewsTable() throws SQLException {
@@ -153,6 +159,32 @@ public class NewsRepository {
         return newsModel;
     }
 
+    private List<NewsModel> searchNews(String toSearch, SearchType type) throws SQLException {
+        Connection c = getConnection();
+        ArrayList<NewsModel> searchResult = new ArrayList<>();
+        try(PreparedStatement preparedStatement = c.prepareStatement(type == SearchType.TITLE_SEARCH ? searchInTitleQuery : searchInBodyQuery)) {
+            preparedStatement.setString(1, toSearch);
+            ResultSet result = preparedStatement.executeQuery();
+            while(result.next()) {
+                searchResult.add(convertToNewsModel(result));
+            }
+
+            return searchResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<NewsModel> searchInTitle(String toSearch) throws SQLException {
+        return searchNews(toSearch, SearchType.TITLE_SEARCH);
+    }
+
+    public List<NewsModel> searchInBody(String toSearch) throws SQLException {
+        return searchNews(toSearch, SearchType.BODY_SEARCH);
+    }
+
     private Connection getConnection() throws SQLException {
         return DatabaseConnection.getDatabaseConnection().getConnection();
     }
@@ -168,4 +200,7 @@ public class NewsRepository {
         }
         return REPO;
     }
+
+    private enum SearchType {TITLE_SEARCH, BODY_SEARCH}
+
 }
