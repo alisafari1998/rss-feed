@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,8 @@ public class RSSFeedProcessor {
                 }
 
             }
+            if (tmp.getPublishDate() == null)
+                tmp.setPublishDate(Timestamp.valueOf(LocalDateTime.now()));
             data.add(tmp);
         }
 

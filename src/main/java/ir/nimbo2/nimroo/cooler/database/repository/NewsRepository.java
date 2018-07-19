@@ -149,7 +149,7 @@ public class NewsRepository {
     }
 
     public long countTodayNewsBySiteInDate(String site) throws SQLException, UnexpectedSQLBehaviorException {
-        return countNewsBySiteInDate(site, Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(0)),
+        return countNewsBySiteInDate(site, Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)),
                 Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(1)));
     }
 
