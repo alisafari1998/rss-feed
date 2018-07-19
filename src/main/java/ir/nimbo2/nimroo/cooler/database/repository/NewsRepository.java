@@ -7,6 +7,8 @@ import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +146,15 @@ public class NewsRepository {
             c.close();
         }
 
+    }
+
+    public long countTodayNewsBySiteInDate(String site) throws SQLException, UnexpectedSQLBehaviorException {
+        return countNewsBySiteInDate(site, Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(0)),
+                Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(1)));
+    }
+
+    public long countADayNewsBySiteInDate(String site, Timestamp begin) throws SQLException, UnexpectedSQLBehaviorException {
+        return countNewsBySiteInDate(site, begin, Timestamp.valueOf(begin.toLocalDateTime().plusDays(1)));
     }
 
     private NewsModel convertToNewsModel(ResultSet result) throws SQLException {
