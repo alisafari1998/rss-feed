@@ -54,6 +54,8 @@ public class DatabaseConnection {
         cpds.setJdbcUrl(Config.MY_SQL_CONNECTION_ADDRESS);
         cpds.setUser(Config.DATABASE_USER);
         cpds.setPassword(Config.DATABASE_PASSWORD);
+        cpds.setMinPoolSize(5);
+        cpds.setMaxPoolSize(15);
 
         createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS " + databaseName +
                 " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
