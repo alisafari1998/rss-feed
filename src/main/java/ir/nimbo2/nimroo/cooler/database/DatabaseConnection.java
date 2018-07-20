@@ -13,7 +13,7 @@ public class DatabaseConnection {
     private boolean init = false;
 
     private String createDatabaseQuery;
-    private String databaseName = Config.DATABASE_NAME;
+    private String databaseName = Config.getDatabaseName();
 
     private ComboPooledDataSource cpds;
 
@@ -26,13 +26,13 @@ public class DatabaseConnection {
         if (testPostfix == null || testPostfix.isEmpty())
             testPostfix = System.currentTimeMillis() + "";
 
-        databaseName = Config.DATABASE_NAME + "_" + testPostfix;
+        databaseName = Config.getDatabaseName() + "_" + testPostfix;
         init();
 
     }
 
     public void destroyTestDatabase() throws SQLException {
-        if (databaseName.equals(Config.DATABASE_NAME))
+        if (databaseName.equals(Config.getDatabaseName()))
             return;
 
         Statement st = getConnection().createStatement();
@@ -51,9 +51,9 @@ public class DatabaseConnection {
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-        cpds.setJdbcUrl(Config.MY_SQL_CONNECTION_ADDRESS);
-        cpds.setUser(Config.DATABASE_USER);
-        cpds.setPassword(Config.DATABASE_PASSWORD);
+        cpds.setJdbcUrl(Config.getMySqlConnectionAddress());
+        cpds.setUser(Config.getDatabaseUser());
+        cpds.setPassword(Config.getDatabasePassword());
         cpds.setMinPoolSize(5);
         cpds.setMaxPoolSize(15);
 

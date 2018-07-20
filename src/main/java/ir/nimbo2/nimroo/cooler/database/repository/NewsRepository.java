@@ -46,8 +46,8 @@ public class NewsRepository {
         countNewsBySiteInDateQuery = "SELECT COUNT(*) AS row_count FROM " + databaseName +
                 ".news as news INNER JOIN "+ databaseName +
                 ".config as config ON news.config_id=config.id WHERE config.site=? AND publish_date BETWEEN ? AND ?";
-        searchInTitleQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".news" + " WHERE title LIKE ?";
-        searchInBodyQuery = "SELECT * FROM " + Config.DATABASE_NAME + ".news" + " WHERE news_body LIKE ?";
+        searchInTitleQuery = "SELECT * FROM " + databaseName + ".news" + " WHERE title LIKE ?";
+        searchInBodyQuery = "SELECT * FROM " + databaseName + ".news" + " WHERE news_body LIKE ?";
 
     }
 

@@ -20,7 +20,7 @@ public class App {
     //static Logger logger = Logger.getLogger(App.class);
 
     public static void main( String[] args ) {
-
+        Config.load();
         PropertyConfigurator.configure("log4j.properties");
         //logger.error("Log4j appender configuration is successful !!");
 
