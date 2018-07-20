@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 
-public class ConfigModelTest {
+public class ConfigRepositoryTest {
 
     ConfigModel configModel;
     static ConfigRepository configRepository;

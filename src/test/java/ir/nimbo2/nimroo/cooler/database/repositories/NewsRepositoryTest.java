@@ -1,8 +1,11 @@
-package ir.nimbo2.nimroo.cooler.database.model;
+package ir.nimbo2.nimroo.cooler.database.repositories;
 
 import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
+import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
+import ir.nimbo2.nimroo.cooler.database.model.ConfigRepositoryTest;
+import ir.nimbo2.nimroo.cooler.database.model.NewsModel;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
 import ir.nimbo2.nimroo.cooler.database.repository.NewsRepository;
 import org.junit.*;
@@ -16,7 +19,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class NewsModelTest {
+public class NewsRepositoryTest {
 
     static DatabaseConnection dc;
     NewsModel news;
@@ -41,7 +44,7 @@ public class NewsModelTest {
         tmp.setSite("10LastTitleTest_Site");
         tmp.setId(configRepository.insertConfig(tmp));
         for (int i = 0; i < 20; ++i) {
-            NewsModel model = NewsModelTest.getDummyModel();
+            NewsModel model = NewsRepositoryTest.getDummyModel();
             model.setTitle(i+"_10LastTitle");
             model.getPublishDate().setTime(model.getPublishDate().getTime() - i * 10000);
             model.setConfigId(tmp.getId());
@@ -56,7 +59,7 @@ public class NewsModelTest {
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(System.currentTimeMillis());
             c.add(Calendar.DAY_OF_MONTH, i);
-            NewsModel model = NewsModelTest.getDummyModel();
+            NewsModel model = NewsRepositoryTest.getDummyModel();
             model.setConfigId(tmp.getId());
             model.setPublishDate(new Timestamp(c.getTimeInMillis()));
             for (int j = 0; j < i+5; ++j) {
@@ -68,7 +71,7 @@ public class NewsModelTest {
     @Before
     public void beforeEach() throws Exception {
         news = new NewsModel();
-        dummyConfig = ConfigModelTest.getDummyModel();
+        dummyConfig = ConfigRepositoryTest.getDummyModel();
         dummyConfig.setId(configRepository.insertConfig(dummyConfig));
     }
 
