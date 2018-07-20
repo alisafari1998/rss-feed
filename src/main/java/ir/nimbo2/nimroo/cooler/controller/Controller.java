@@ -24,14 +24,17 @@ public class Controller {
 
     private ScheduledExecutorService htmlExecutor;
     private static Controller controllerInstance = new Controller();
-
     public static Controller getControllerInstance() {
         return controllerInstance;
     }
+    private NewsRepository newsRepository;
+    private ConfigRepository configRepository;
 
     private Controller() {
         rssExecutor = Executors.newScheduledThreadPool(Config.getRssExecutorServiceSize());
         htmlExecutor = Executors.newScheduledThreadPool(Config.getSiteExecutorServiceSize());
+        newsRepository = new NewsRepository(Config.getDatabaseName());
+        configRepository = new ConfigRepository(Config.getDatabaseName());
     }
 
     public void addRssWebsite(String websiteUrl, String rssUrl, String config) {
@@ -40,7 +43,6 @@ public class Controller {
         configModel.setRSSLink(rssUrl);
         configModel.setConfig(config);
 
-        ConfigRepository configRepository = new ConfigRepository();
         try {
             configRepository.insertConfig(configModel);
         } catch (SQLException | UnexpectedSQLBehaviorException e) {
@@ -52,7 +54,7 @@ public class Controller {
     public void searchNewsByTitle(String partOfNews) {
         HashSet<NewsModel> newsByTitle = new HashSet<>();
         try {
-            newsByTitle = NewsRepository.getRepository().searchInTitle(partOfNews);
+            newsByTitle = newsRepository.searchInTitle(partOfNews);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,8 +65,9 @@ public class Controller {
 
     public void searchNewsByBody(String partOfNews) {
         HashSet<NewsModel> newsByBody = new HashSet<>();
+
         try {
-            newsByBody = NewsRepository.getRepository().searchInBody(partOfNews);
+            newsByBody = newsRepository.searchInBody(partOfNews);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,8 +80,8 @@ public class Controller {
         HashSet<NewsModel> newsByTitle = new HashSet<>();
         HashSet<NewsModel> newsByBody = new HashSet<>();
         try {
-            newsByTitle = NewsRepository.getRepository().searchInTitle(partOfNews);
-            newsByBody = NewsRepository.getRepository().searchInBody(partOfNews);
+            newsByTitle = newsRepository.searchInTitle(partOfNews);
+            newsByBody = newsRepository.searchInBody(partOfNews);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,7 +94,7 @@ public class Controller {
     public void getLastTenNews(String websiteUrl) {
         List<NewsModel> lastTenNews = null;
         try {
-            lastTenNews = NewsRepository.getRepository().loadLast10NewsBySite(websiteUrl);
+            lastTenNews = newsRepository.loadLast10NewsBySite(websiteUrl);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -103,7 +106,7 @@ public class Controller {
 
     public void getThisDayNewsNumber(String websiteUrl) {
         try {
-            System.out.println(NewsRepository.getRepository().countTodayNewsBySiteInDate(websiteUrl));
+            System.out.println(newsRepository.countTodayNewsBySiteInDate(websiteUrl));
         } catch (SQLException e) {      // todo logger
             e.printStackTrace();
         } catch (UnexpectedSQLBehaviorException e) {
@@ -113,7 +116,7 @@ public class Controller {
 
     public void getADayNewsNumber(String websiteUrl, Timestamp date) {
         try {
-            System.out.println(NewsRepository.getRepository().countADayNewsBySiteInDate(websiteUrl, date));
+            System.out.println(newsRepository.countADayNewsBySiteInDate(websiteUrl, date));
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (UnexpectedSQLBehaviorException e) {
@@ -124,7 +127,7 @@ public class Controller {
     public void start() {
         List<ConfigModel> sites = null;
         try {
-            sites = ConfigRepository.getRepository().loadAllConfigs();
+            sites = configRepository.loadAllConfigs();
         } catch (SQLException e) {
             //e.printStackTrace();
             logger.debug("Exception", e);
@@ -133,8 +136,7 @@ public class Controller {
 
         for (ConfigModel configModel : sites) {
             logger.info("Going through site: " + configModel.getSite());
-            rssExecutor.scheduleWithFixedDelay(new SiteTask(configModel, htmlExecutor, rssExecutor), 0, 1, TimeUnit.MINUTES);
-
+            rssExecutor.scheduleWithFixedDelay(new SiteTask(configModel, htmlExecutor, rssExecutor, newsRepository, configRepository), 0, 1, TimeUnit.MINUTES);
         }
     }
 }

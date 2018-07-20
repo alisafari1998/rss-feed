@@ -20,29 +20,31 @@ import static org.junit.Assert.assertEquals;
 public class ConfigModelTest {
 
     ConfigModel configModel;
-    ConfigRepository repository;
+    static ConfigRepository configRepository;
     static DatabaseConnection dc;
     ArrayList<ConfigModel> dbContent = new ArrayList<>();
-
+    static String databaseName = Config.getDatabaseName() + "_config_model_test";
     @BeforeClass
     public static void connectToDB() throws Exception {
         dc = DatabaseConnection.getDatabaseConnection();
-	    dc.setupNewTestDatabase("config_model_test");
-        ConfigRepository.getRepository().init();
-        ConfigRepository.getRepository().createConfigTable();
+        dc.init();
+        Statement statement = dc.getConnection().createStatement();
+        statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + databaseName +
+                " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+
+        configRepository = new ConfigRepository(databaseName);
+        configRepository.createConfigTable();
     }
 
     @Before
     public void setUp() throws Exception {
         configModel = new ConfigModel();
-        repository = ConfigRepository.getRepository();
     }
 
     @Test
     public void createTableTest() throws SQLException {
-
         try (Statement st = dc.getConnection().createStatement()) {
-            st.executeQuery("select * from "+ dc.getDatabaseName() + ".config");
+            st.executeQuery("select * from "+ databaseName + ".config");
         } catch (SQLException e) {
             e.printStackTrace();
             assert false;
@@ -55,13 +57,12 @@ public class ConfigModelTest {
 
     @Test
     public void insertTest() throws SQLException, UnexpectedSQLBehaviorException {
-
         configModel = getDummyModel();
-        configModel.setId(repository.insertConfig(configModel));
+        configModel.setId(configRepository.insertConfig(configModel));
         dbContent.add(configModel);
         ConfigModel inserted = new ConfigModel();
         Statement st = dc.getConnection().createStatement();
-        ResultSet result = st.executeQuery("SELECT * FROM " + dc.getDatabaseName() +
+        ResultSet result = st.executeQuery("SELECT * FROM " + databaseName +
                 ".config" + " WHERE id=" + configModel.getId());
 
         if (result.next()) {
@@ -84,15 +85,13 @@ public class ConfigModelTest {
      */
     @Test
     public void load() throws Exception {
-
       ConfigModel inserted = getDummyModel();
-      inserted.setId(repository.insertConfig(inserted));
+      inserted.setId(configRepository.insertConfig(inserted));
       dbContent.add(inserted);
 
-      configModel = repository.loadConfig(inserted.getId());
+      configModel = configRepository.loadConfig(inserted.getId());
 
       assertEquals(configModel, inserted);
-
     }
 
     /**
@@ -100,15 +99,14 @@ public class ConfigModelTest {
      */
     @Test
     public void loadAllTest() throws SQLException, UnexpectedSQLBehaviorException {
-
         ConfigModel toInsert;
         for (int i = 0; i < 10; i++) {
             toInsert = getDummyModel();
-            toInsert.setId(repository.insertConfig(toInsert));
+            toInsert.setId(configRepository.insertConfig(toInsert));
             dbContent.add(toInsert);
         }
 
-        List<ConfigModel> configs = repository.loadAllConfigs();
+        List<ConfigModel> configs = configRepository.loadAllConfigs();
         assertEquals(configs.size(), dbContent.size());
         assertEquals(configs, dbContent);
     }
@@ -116,25 +114,22 @@ public class ConfigModelTest {
     @Test
     public void updateLatestNewsTest() throws SQLException, UnexpectedSQLBehaviorException {
         ConfigModel cm = getDummyModel();
-        ConfigRepository cr = ConfigRepository.getRepository();
-        cm.setId(cr.insertConfig(cm));
+        cm.setId(configRepository.insertConfig(cm));
         cm.setLatestNews("booooo");
 
-        cr.updateLatestNews(cm);
+        configRepository.updateLatestNews(cm);
 
-        ConfigModel tmp = cr.loadConfig(cm.getId());
+        ConfigModel tmp = configRepository.loadConfig(cm.getId());
         assertEquals(tmp, cm);
-
     }
 
     @Test
     public void loadLatestNewsTest() throws SQLException, UnexpectedSQLBehaviorException {
         ConfigModel cm = getDummyModel();
-        ConfigRepository cr = ConfigRepository.getRepository();
         cm.setLatestNews("bam bam bam");
-        cm.setId(cr.insertConfig(cm));
-        cr.updateLatestNews(cm);
-        ConfigModel tmp = cr.loadLatestNews(cm.getId());
+        cm.setId(configRepository.insertConfig(cm));
+        configRepository.updateLatestNews(cm);
+        ConfigModel tmp = configRepository.loadLatestNews(cm.getId());
         assertEquals(tmp.getLatestNews(), cm.getLatestNews());
     }
 
@@ -150,6 +145,7 @@ public class ConfigModelTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        dc.destroyTestDatabase();
+        Statement statement = dc.getConnection().createStatement();
+        statement.execute("DROP DATABASE IF EXISTS " + databaseName);
     }
 }

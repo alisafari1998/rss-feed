@@ -17,13 +17,14 @@ public class NewsTask implements Runnable {
 
     NewsModel news;
     String config;
+    NewsRepository newsRepository;
     private ScheduledExecutorService htmlExecutor;
 
-
-    public NewsTask(NewsModel news, String config, ScheduledExecutorService htmlExecutor) {
+    public NewsTask(NewsModel news, String config, ScheduledExecutorService htmlExecutor, NewsRepository newsRepository) {
         this.news = news;
         this.config = config;
         this.htmlExecutor = htmlExecutor;
+        this.newsRepository = newsRepository;
     }
 
     @Override
@@ -45,9 +46,8 @@ public class NewsTask implements Runnable {
         }
 
         news.setNewsBody(newsBody);
-
         try {
-            NewsRepository.getRepository().insertNews(news);
+            newsRepository.insertNews(news);
         } catch (UnexpectedSQLBehaviorException e) {
             //e.printStackTrace();
             logger.debug("Exception", e);

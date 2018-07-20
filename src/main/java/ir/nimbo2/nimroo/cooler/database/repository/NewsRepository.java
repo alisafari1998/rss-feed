@@ -18,17 +18,12 @@ public class NewsRepository {
     private String createNewsTableQuery;
     private String insertNewsQuery;
     private String loadNewsQuery;
-    private static NewsRepository REPO;
     private String loadLast10NewsBySiteQuery;
     private String countNewsBySiteInDateQuery;
     private String searchInTitleQuery;
     private String searchInBodyQuery;
 
-    private NewsRepository() {
-    }
-
-    public void init() {
-        String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
+    public NewsRepository(String databaseName) {
         createNewsTableQuery = "CREATE TABLE IF NOT  EXISTS "+
                 databaseName +".news (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)," +
                 "title VARCHAR (255), link VARCHAR (255) NOT NULL, description VARCHAR (1024)," +
@@ -202,17 +197,6 @@ public class NewsRepository {
         return DatabaseConnection.getDatabaseConnection().getConnection();
     }
 
-    public static NewsRepository getRepository() {
-
-        if (REPO == null) {
-            synchronized (NewsRepository.class) {
-                if (REPO == null) {
-                    REPO = new NewsRepository();
-                }
-            }
-        }
-        return REPO;
-    }
 
     private enum SearchType {TITLE_SEARCH, BODY_SEARCH}
 

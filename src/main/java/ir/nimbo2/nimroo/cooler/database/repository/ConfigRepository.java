@@ -1,5 +1,6 @@
 package ir.nimbo2.nimroo.cooler.database.repository;
 
+import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
@@ -21,13 +22,7 @@ public class ConfigRepository {
     private String updateLatestNewsQuery;
     private String loadLatestNewsQuery;
 
-    private static final ConfigRepository REPO = new ConfigRepository();
-
-    public ConfigRepository() {
-    }
-
-    public void init() {
-        String databaseName = DatabaseConnection.getDatabaseConnection().getDatabaseName();
+    public ConfigRepository(String databaseName) {
         createConfigTableQuery = "CREATE TABLE IF NOT  EXISTS "
                 + databaseName
                 + ".config (id INTEGER NOT NULL AUTO_INCREMENT, PRIMARY KEY (id),"
@@ -168,9 +163,5 @@ public class ConfigRepository {
 
     private Connection getConnection() throws SQLException {
         return DatabaseConnection.getDatabaseConnection().getConnection();
-    }
-
-    public static ConfigRepository getRepository() {
-        return REPO;
     }
 }

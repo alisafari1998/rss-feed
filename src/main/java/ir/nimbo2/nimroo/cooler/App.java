@@ -27,11 +27,10 @@ public class App {
         Cli cli = new Cli();
         try {
             DatabaseConnection.getDatabaseConnection().init();
-            NewsRepository.getRepository().init();
-            ConfigRepository.getRepository().init();
-            ConfigRepository.getRepository().createConfigTable();
-            NewsRepository.getRepository().createNewsTable();
-
+            NewsRepository newsRepository = new NewsRepository(Config.getDatabaseName());
+            newsRepository.createNewsTable();
+            ConfigRepository configRepository = new ConfigRepository(Config.getDatabaseName());
+            configRepository.createConfigTable();
         } catch (SQLException | NamingException | PropertyVetoException e) {
             e.printStackTrace();
         }

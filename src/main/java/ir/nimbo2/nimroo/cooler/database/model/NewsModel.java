@@ -88,10 +88,6 @@ public class NewsModel {
         return configId;
     }
 
-    public ConfigModel getConfigModel() throws SQLException {
-        return ConfigRepository.getRepository().loadConfig(configId);
-    }
-
     @Override
     public String toString() {
 

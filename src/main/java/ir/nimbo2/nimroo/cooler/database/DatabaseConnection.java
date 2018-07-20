@@ -8,9 +8,7 @@ import java.sql.*;
 import javax.naming.NamingException;
 
 public class DatabaseConnection {
-    public static final int MYSQL_DUPLICATE_PK = 1062;
     private static DatabaseConnection instance = new DatabaseConnection();
-    private boolean init = false;
 
     private String createDatabaseQuery;
     private String databaseName = Config.getDatabaseName();
@@ -19,24 +17,6 @@ public class DatabaseConnection {
 
     public DatabaseConnection()  {
 
-    }
-
-    public void setupNewTestDatabase(String testPostfix) throws PropertyVetoException, NamingException, SQLException {
-
-        if (testPostfix == null || testPostfix.isEmpty())
-            testPostfix = System.currentTimeMillis() + "";
-
-        databaseName = Config.getDatabaseName() + "_" + testPostfix;
-        init();
-
-    }
-
-    public void destroyTestDatabase() throws SQLException {
-        if (databaseName.equals(Config.getDatabaseName()))
-            return;
-
-        Statement st = getConnection().createStatement();
-        st.execute("DROP DATABASE IF EXISTS " + databaseName);
     }
 
     public String getDatabaseName() {
@@ -66,13 +46,10 @@ public class DatabaseConnection {
     private void createDatabases() throws SQLException {
 
         try (Statement st = getConnection().createStatement()) {
-            System.err.println(st);
             st.executeUpdate(createDatabaseQuery);
-//            throw new SQLException();
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(createDatabaseQuery);
-//            System.err.println("Exception in createDatabase closing the connection.");
             throw e;
         }
     }

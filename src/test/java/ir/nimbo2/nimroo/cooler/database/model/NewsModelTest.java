@@ -1,5 +1,6 @@
 package ir.nimbo2.nimroo.cooler.database.model;
 
+import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.database.DatabaseConnection;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.repository.ConfigRepository;
@@ -19,36 +20,38 @@ public class NewsModelTest {
 
     static DatabaseConnection dc;
     NewsModel news;
-    NewsRepository repository;
+    static final String databaseName = Config.getDatabaseName() + "_" + "news_model_test";
+    static NewsRepository newsRepository = new NewsRepository(databaseName);
+    static ConfigRepository configRepository = new ConfigRepository(databaseName);
     ConfigModel dummyConfig;
 
     @BeforeClass
     public static void init() throws Exception {
         dc = DatabaseConnection.getDatabaseConnection();
-        dc.setupNewTestDatabase("news_model_test");
-        ConfigRepository.getRepository().init();
-        NewsRepository.getRepository().init();
+        dc.init();
+        Statement statement = dc.getConnection().createStatement();
+        statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + databaseName +
+                " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
 
-        ConfigRepository.getRepository().createConfigTable();
-        NewsRepository.getRepository().createNewsTable();
+        configRepository.createConfigTable();
+        newsRepository.createNewsTable();
 
         //Setup for 10LastTitleTest_Site.
         ConfigModel tmp = new ConfigModel();
         tmp.setSite("10LastTitleTest_Site");
-        tmp.setId(ConfigRepository.getRepository().insertConfig(tmp));
+        tmp.setId(configRepository.insertConfig(tmp));
         for (int i = 0; i < 20; ++i) {
             NewsModel model = NewsModelTest.getDummyModel();
             model.setTitle(i+"_10LastTitle");
             model.getPublishDate().setTime(model.getPublishDate().getTime() - i * 10000);
             model.setConfigId(tmp.getId());
-            NewsRepository.getRepository().insertNews(model);
+            newsRepository.insertNews(model);
         }
-
 
         //Setup for countInDate
         tmp = new ConfigModel();
         tmp.setSite("CountSiteInDate");
-        tmp.setId(ConfigRepository.getRepository().insertConfig(tmp));
+        tmp.setId(configRepository.insertConfig(tmp));
         for(int i = -3; i < 4; i++) {
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(System.currentTimeMillis());
@@ -57,7 +60,7 @@ public class NewsModelTest {
             model.setConfigId(tmp.getId());
             model.setPublishDate(new Timestamp(c.getTimeInMillis()));
             for (int j = 0; j < i+5; ++j) {
-                NewsRepository.getRepository().insertNews(model);
+                newsRepository.insertNews(model);
             }
         }
     }
@@ -65,25 +68,23 @@ public class NewsModelTest {
     @Before
     public void beforeEach() throws Exception {
         news = new NewsModel();
-        repository = NewsRepository.getRepository();
         dummyConfig = ConfigModelTest.getDummyModel();
-        dummyConfig.setId(ConfigRepository.getRepository().insertConfig(dummyConfig));
+        dummyConfig.setId(configRepository.insertConfig(dummyConfig));
     }
 
     @Test
     public void createTableTest() {
         try {
-            repository.createNewsTable();
+            newsRepository.createNewsTable();
 
             Statement st = dc.getConnection().createStatement();
-            st.executeQuery("select * from " + dc.getDatabaseName() + ".news");
+            st.executeQuery("select * from " + databaseName + ".news");
         } catch (SQLException e) {
             e.printStackTrace();
             assert false;
         } catch (Exception e) {
             assert false;
         }
-
         assert true;
     }
 
@@ -92,10 +93,10 @@ public class NewsModelTest {
 
         news = getDummyModel();
         news.setConfigId(dummyConfig.getId());
-        news.setId(repository.insertNews(news));
+        news.setId(newsRepository.insertNews(news));
 
         Statement loadById = dc.getConnection().createStatement();
-        ResultSet result = loadById.executeQuery("SELECT * FROM "+ dc.getDatabaseName() + ".news" +
+        ResultSet result = loadById.executeQuery("SELECT * FROM "+ databaseName + ".news" +
                 " WHERE id="+news.getId());
 
         if (result.next()) {
@@ -119,15 +120,15 @@ public class NewsModelTest {
 
         NewsModel inserted = getDummyModel();
         inserted.setConfigId(dummyConfig.getId());
-        inserted.setId(repository.insertNews(inserted));
+        inserted.setId(newsRepository.insertNews(inserted));
 
-        news = repository.loadNews(inserted.getId());
+        news = newsRepository.loadNews(inserted.getId());
         assertTrue(areEquals(news, inserted));
     }
 
     @Test
     public void loadLast10NewsTest() throws SQLException {
-        List<NewsModel> models = repository.loadLast10NewsBySite("10LastTitleTest_Site");
+        List<NewsModel> models = newsRepository.loadLast10NewsBySite("10LastTitleTest_Site");
 
         for(int i = 0; i < 10; i++) {
             assertEquals(models.get(i).getTitle(), i+"_10LastTitle");
@@ -141,7 +142,7 @@ public class NewsModelTest {
     @Test
     public void countNewsBySiteInDate() throws SQLException, UnexpectedSQLBehaviorException {
         for (int i = -3; i < 4; ++i) {
-            long count = NewsRepository.getRepository().countNewsBySiteInDate("CountSiteInDate",
+            long count = newsRepository.countNewsBySiteInDate("CountSiteInDate",
                     Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(i)),
                     Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusDays(i+1)));
             assertEquals(i+5, count);
@@ -150,7 +151,8 @@ public class NewsModelTest {
 
     @AfterClass
     public static void cleanUp() throws SQLException {
-        dc.destroyTestDatabase();
+        Statement statement = dc.getConnection().createStatement();
+        statement.execute("DROP DATABASE IF EXISTS " + databaseName);
     }
 
     /**
@@ -169,7 +171,6 @@ public class NewsModelTest {
         return model;
 
     }
-
 
     public boolean areEquals(NewsModel newsModel1, NewsModel newsModel2) {
         return newsModel2.getId() == newsModel1.getId() && newsModel2.getTitle().equals(newsModel1.getTitle())
