@@ -1,5 +1,6 @@
 package ir.nimbo2.nimroo.cooler.controller;
 
+import ir.nimbo2.nimroo.cooler.Config;
 import ir.nimbo2.nimroo.cooler.concurency.SiteTask;
 import ir.nimbo2.nimroo.cooler.database.UnexpectedSQLBehaviorException;
 import ir.nimbo2.nimroo.cooler.database.model.ConfigModel;
@@ -29,8 +30,8 @@ public class Controller {
     }
 
     private Controller() {
-        rssExecutor = Executors.newScheduledThreadPool(5);
-        htmlExecutor = Executors.newScheduledThreadPool(10);
+        rssExecutor = Executors.newScheduledThreadPool(Config.getRssExecutorServiceSize());
+        htmlExecutor = Executors.newScheduledThreadPool(Config.getSiteExecutorServiceSize());
     }
 
     public void addRssWebsite(String websiteUrl, String rssUrl, String config) {
