@@ -8,16 +8,13 @@ import java.util.Properties;
 public class Config {
     private Config(){}
 
-    //Not final because of testing database.
     private static String DATABASE_NAME = "rssfeed";
     private static String DATABASE_USER = "root";
     private static String DATABASE_PASSWORD = "boogh";
     private static String MY_SQL_CONNECTION_ADDRESS = "jdbc:mysql://localhost/"
             + "?useUnicode=yes&characterEncoding=UTF-8";
-
     private static short DATABASE_CONNECTION_POOL_MIN = 5;
     private static short DATABASE_CONNECTION_POOL_MAX = 15;
-
     private static short RSS_EXECUTOR_SERVICE_SIZE = 5;
     private static short SITE_EXECUTOR_SERVICE_SIZE = 10;
 
@@ -27,18 +24,15 @@ public class Config {
 
         try(FileInputStream fis = new FileInputStream(appConfigPath)) {
             properties.load(fis);
-            Config.DATABASE_NAME = properties.getProperty("database.name");
             Config.DATABASE_USER = properties.getProperty("database.username");
             Config.DATABASE_PASSWORD = properties.getProperty("database.password");
-//            Config.MY_SQL_CONNECTION_ADDRESS = properties.getProperty("database.address");
+            Config.MY_SQL_CONNECTION_ADDRESS = properties.getProperty("database.address");
 
             Config.DATABASE_CONNECTION_POOL_MIN = Short.parseShort(properties.getProperty("database.pool.min"));
             Config.DATABASE_CONNECTION_POOL_MAX = Short.parseShort(properties.getProperty("database.pool.max"));
 
             Config.RSS_EXECUTOR_SERVICE_SIZE = Short.parseShort(properties.getProperty("rss.pool.size"));
             Config.SITE_EXECUTOR_SERVICE_SIZE = Short.parseShort(properties.getProperty("site.pool.size"));
-
-
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
