@@ -18,6 +18,7 @@ public class Cli {
     private String websiteUrl, rssUrl, config;
     private String partOfNews;
     private String dateString;
+    private String dateConfig;
     private Date parsedDate;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -53,7 +54,13 @@ public class Cli {
                         break;
                     }
 
-                    controller.addRssWebsite(websiteUrl, rssUrl, config);
+                    setDateConfig();
+                    if (exit) {
+                        break;
+                    }
+
+
+                    controller.addRssWebsite(websiteUrl, rssUrl, config, dateConfig);
                     break;
 
                 case "2":
@@ -170,6 +177,22 @@ public class Cli {
         }
     }
 
+    private void setDateConfig() {
+        valid = false;
+        while (!valid) {
+            System.out.print("Enter website date config");
+            System.out.println(" (or type exit)");
+            dateConfig = scanner.next();
+            if (dateConfig.equals("exit")) {
+                exit = true;
+                return;
+            }
+            if (!(valid = dateConfigChecker(dateConfig))){
+                System.out.println("invalid date config");
+            }
+        }
+    }
+
     private void setPartOfNews() {
         System.out.print("Enter part of the news");
         System.out.println(" (or type exit)");
@@ -203,6 +226,10 @@ public class Cli {
     }
 
     boolean configChecker(String config) {
+        return true;
+    }
+
+    boolean dateConfigChecker(String dateConfig) {
         return true;
     }
 

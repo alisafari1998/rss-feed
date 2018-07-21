@@ -47,14 +47,11 @@ public class NewsRepository {
     }
 
     public void createNewsTable() throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement createTable = c.prepareStatement(createNewsTableQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement createTable = c.prepareStatement(createNewsTableQuery)) {
             createTable.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally{
-            c.close();
         }
     }
 
@@ -66,8 +63,8 @@ public class NewsRepository {
      * @throws SQLException
      */
     public long insertNews(NewsModel newsModel) throws UnexpectedSQLBehaviorException, SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement insertPS = c.prepareStatement(insertNewsQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement insertPS = c.prepareStatement(insertNewsQuery)) {
 
             insertPS.setString(1, newsModel.getTitle());
             insertPS.setString(2, newsModel.getLink());
@@ -83,14 +80,11 @@ public class NewsRepository {
 
             throw new UnexpectedSQLBehaviorException("Empty insert resultSet !!!");
         }
-        finally{
-            c.close();
-        }
     }
 
     public NewsModel loadNews(long id) throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement preparedStatement = c.prepareStatement(loadNewsQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement preparedStatement = c.prepareStatement(loadNewsQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet result = preparedStatement.executeQuery();
             if (result.next()) {
@@ -99,14 +93,11 @@ public class NewsRepository {
 
             return null;
         }
-        finally{
-            c.close();
-        }
     }
 
     public List<NewsModel> loadLast10NewsBySite(String site) throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement preparedStatement = c.prepareStatement(loadLast10NewsBySiteQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement preparedStatement = c.prepareStatement(loadLast10NewsBySiteQuery)) {
             preparedStatement.setString(1, site);
             ResultSet result = preparedStatement.executeQuery();
             List<NewsModel> finalResult = new ArrayList<>();
@@ -120,14 +111,11 @@ public class NewsRepository {
             }
             return finalResult;
         }
-        finally {
-            c.close();
-        }
     }
 
     public long countNewsBySiteInDate(String site, Timestamp after, Timestamp before) throws SQLException, UnexpectedSQLBehaviorException {
-        Connection c = getConnection();
-        try(PreparedStatement preparedStatement = c.prepareStatement(countNewsBySiteInDateQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement preparedStatement = c.prepareStatement(countNewsBySiteInDateQuery)) {
             preparedStatement.setString(1, site);
             preparedStatement.setTimestamp(2, after);
             preparedStatement.setTimestamp(3, before);
@@ -137,9 +125,6 @@ public class NewsRepository {
             }
 
             throw new UnexpectedSQLBehaviorException("Empty insert resultSet !!!");
-        }
-        finally{
-            c.close();
         }
 
     }

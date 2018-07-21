@@ -38,7 +38,6 @@ public class SiteTask implements Runnable {
         try {
             rssFeedProcessor = new RSSFeedProcessor(new URL(configModel.getRSSLink()));
         } catch (MalformedURLException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
             return;
         }
@@ -47,9 +46,8 @@ public class SiteTask implements Runnable {
             //Download and process rss xml.
             rssFeedProcessor.process();
         } catch (IOException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
-            System.out.println("Network problem !!!!!");
+            //System.out.println("Network problem !!!!!");
             return;
         }
 

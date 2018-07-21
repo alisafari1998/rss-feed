@@ -33,13 +33,11 @@ public class NewsTask implements Runnable {
         try {
             newsBody = NewsProcessor.getNews(news.getLink(), config);
         } catch (NoNewsBodyFoundException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
             return;
         } catch (IOException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
-            System.out.println("Network problem !!!!!" + "\n" + news.getLink());
+            //System.out.println("Network problem !!!!!" + "\n" + news.getLink());
 
             htmlExecutor.schedule(this, 1, TimeUnit.MINUTES);
             return;
@@ -49,11 +47,9 @@ public class NewsTask implements Runnable {
         try {
             newsRepository.insertNews(news);
         } catch (UnexpectedSQLBehaviorException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
             System.out.println(":||||||||");
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
             System.out.println("Database access error");
         }

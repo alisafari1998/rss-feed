@@ -37,11 +37,12 @@ public class Controller {
         configRepository = new ConfigRepository(Config.getDatabaseName());
     }
 
-    public void addRssWebsite(String websiteUrl, String rssUrl, String config) {
+    public void addRssWebsite(String websiteUrl, String rssUrl, String config, String dateConfig) {
         ConfigModel configModel = new ConfigModel();
         configModel.setSite(websiteUrl);
         configModel.setRSSLink(rssUrl);
         configModel.setConfig(config);
+        configModel.setDateConfig(dateConfig);
 
         try {
             configRepository.insertConfig(configModel);
@@ -124,12 +125,12 @@ public class Controller {
         }
     }
 
+    // this method loads website configs and update news from them
     public void start() {
         List<ConfigModel> sites = null;
         try {
             sites = configRepository.loadAllConfigs();
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.debug("Exception", e);
             return;
         }

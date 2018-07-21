@@ -41,12 +41,9 @@ public class ConfigRepository {
     }
 
     public void createConfigTable() throws SQLException {
-        Connection c = getConnection();
-        try (PreparedStatement createTable = c.prepareStatement(createConfigTableQuery)) {
+
+        try (Connection c = getConnection(); PreparedStatement createTable = c.prepareStatement(createConfigTableQuery)) {
             createTable.executeUpdate();
-        }
-        finally{
-            c.close();
         }
 
     }
@@ -59,8 +56,8 @@ public class ConfigRepository {
      * @throws SQLException
      */
     public long insertConfig(ConfigModel configModel) throws SQLException, UnexpectedSQLBehaviorException {
-        Connection c = getConnection();
-        try(PreparedStatement insertPS = c.prepareStatement(insertConfigQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement insertPS = c.prepareStatement(insertConfigQuery)) {
             insertPS.setString(1, configModel.getSite());
             insertPS.setString(2, configModel.getRSSLink());
             insertPS.setString(3, configModel.getConfig());
@@ -73,14 +70,11 @@ public class ConfigRepository {
             }
             throw new UnexpectedSQLBehaviorException("Empty insert resultSet !!!");
         }
-        finally{
-            c.close();
-        }
     }
 
     public ConfigModel loadConfig(long id) throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement loadPS = c.prepareStatement(loadConfigQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement loadPS = c.prepareStatement(loadConfigQuery)) {
             loadPS.setLong(1, id);
             ResultSet result = loadPS.executeQuery();
 
@@ -91,14 +85,11 @@ public class ConfigRepository {
                 return null;
             }
         }
-        finally{
-            c.close();
-        }
     }
 
     public List<ConfigModel> loadAllConfigs() throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement loadAllPS = c.prepareStatement(loadAllConfigsQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement loadAllPS = c.prepareStatement(loadAllConfigsQuery)) {
 
             ArrayList<ConfigModel> list = new ArrayList<>();
             ResultSet result = loadAllPS.executeQuery();
@@ -109,14 +100,11 @@ public class ConfigRepository {
             }
             return list;
         }
-        finally{
-            c.close();
-        }
     }
 
     public void updateLatestNews(ConfigModel configModel) throws SQLException {
-        Connection c = getConnection();
-        try(PreparedStatement updateLatestNews = c.prepareStatement(updateLatestNewsQuery)){
+
+        try(Connection c = getConnection(); PreparedStatement updateLatestNews = c.prepareStatement(updateLatestNewsQuery)){
 
             updateLatestNews.setString(1, configModel.getLatestNews());
             updateLatestNews.setLong(2, configModel.getId());
@@ -125,15 +113,12 @@ public class ConfigRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        finally{
-            c.close();
-        }
     }
 
     public ConfigModel loadLatestNews(long id) throws SQLException {
         ConfigModel cm = new ConfigModel();
-        Connection c = getConnection();
-        try(PreparedStatement loadLatestNews = c.prepareStatement(loadLatestNewsQuery)) {
+
+        try(Connection c = getConnection(); PreparedStatement loadLatestNews = c.prepareStatement(loadLatestNewsQuery)) {
             loadLatestNews.setLong(1, id);
             ResultSet result = loadLatestNews.executeQuery();
             cm.setId(id);
@@ -141,10 +126,7 @@ public class ConfigRepository {
                 cm.setLatestNews(result.getString("latest_news"));
             }
         }
-        finally {
-            c.close();
-            return cm;
-        }
+        return cm;
     }
 
     private ConfigModel loadConfigModelFromResultSet(ResultSet result) throws SQLException {
