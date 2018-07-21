@@ -14,6 +14,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -66,6 +67,45 @@ public class NewsRepositoryTest {
                 newsRepository.insertNews(model);
             }
         }
+
+
+        //setup for search test
+        ConfigModel searchConfigModel = new ConfigModel();
+        searchConfigModel.setSite("searchConfig1");
+        searchConfigModel.setId(configRepository.insertConfig(searchConfigModel));
+
+
+        NewsModel searchNewsModel1 = new NewsModel();
+        searchNewsModel1.setTitle("SEARCHtitle1");
+        searchNewsModel1.setNewsBody("qwertyqwerty");
+        searchNewsModel1.setId(1);
+        searchNewsModel1.setLink("searchConfig1");
+        searchNewsModel1.setConfigId(searchConfigModel.getId());
+        newsRepository.insertNews(searchNewsModel1);
+
+        NewsModel searchNewsModel2 = new NewsModel();
+        searchNewsModel2.setTitle("SEARCHtitle2");
+        searchNewsModel2.setNewsBody("qwertyqwerty");
+        searchNewsModel2.setId(2);
+        searchNewsModel2.setLink("searchConfig2");
+        searchNewsModel2.setConfigId(searchConfigModel.getId());
+        newsRepository.insertNews(searchNewsModel2);
+
+        NewsModel searchNewsModel3 = new NewsModel();
+        searchNewsModel3.setTitle("SEARCHtitle3");
+        searchNewsModel3.setNewsBody("qwerty12345");
+        searchNewsModel3.setId(3);
+        searchNewsModel3.setLink("searchConfig3");
+        searchNewsModel3.setConfigId(searchConfigModel.getId());
+        newsRepository.insertNews(searchNewsModel3);
+
+        NewsModel searchNewsModel4 = new NewsModel();
+        searchNewsModel4.setTitle("SEARtitleCH4");
+        searchNewsModel4.setNewsBody("qwer12ty5");
+        searchNewsModel4.setId(4);
+        searchNewsModel4.setLink("searchConfig4");
+        searchNewsModel4.setConfigId(searchConfigModel.getId());
+        newsRepository.insertNews(searchNewsModel4);
     }
 
     @Before
@@ -141,6 +181,51 @@ public class NewsRepositoryTest {
         }
 
     }
+
+    @Test
+    public void searchNewsInTitle() {
+        HashSet<NewsModel> searchNewsModels = new HashSet<>();
+        try {
+            searchNewsModels = newsRepository.searchInTitle("SEARCH");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertEquals(searchNewsModels.size(), 2);
+
+        HashSet<NewsModel> actualNewsModels = new HashSet<>();
+        NewsModel newsModel = new NewsModel();
+        newsModel.setNewsBody("qwertyqwerty");
+        actualNewsModels.add(newsModel);
+
+        NewsModel newsModel2 = new NewsModel();
+        newsModel2.setNewsBody("qwerty12345");
+        actualNewsModels.add(newsModel2);
+
+        assertEquals(searchNewsModels, actualNewsModels);
+    }
+
+    @Test
+    public void searchNewsInBody() {
+        HashSet<NewsModel> searchNewsModels = new HashSet<>();
+        try {
+            searchNewsModels = newsRepository.searchInBody("qwerty");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertEquals(searchNewsModels.size(), 2);
+
+        HashSet<NewsModel> actualNewsModels = new HashSet<>();
+        NewsModel newsModel = new NewsModel();
+        newsModel.setNewsBody("qwertyqwerty");
+        actualNewsModels.add(newsModel);
+
+        NewsModel newsModel2 = new NewsModel();
+        newsModel2.setNewsBody("qwerty12345");
+        actualNewsModels.add(newsModel2);
+
+        assertEquals(searchNewsModels, actualNewsModels);
+    }
+
 
     @Test
     public void countNewsBySiteInDate() throws SQLException, UnexpectedSQLBehaviorException {
